@@ -1,3 +1,4 @@
+## file contains coordinates of 120 roots of E8 with respect to a basis of simple roots.
 10000000 |1
 01000000 |2
 00100000 |3
