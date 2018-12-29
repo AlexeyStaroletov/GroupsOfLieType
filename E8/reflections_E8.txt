@@ -1,5 +1,5 @@
-### set matrices of reflections of E8 explicitly in gap format
-### we suppose that reflections act on the right
+### Here we list matrices of reflections of type E8 in gap format;
+### we suppose that reflections act on vectors on the right;
 ### in the end of file we convert them into permutations
 
 w1:=[[-1,0,1,0,0,0,0,0],[0,1,0,0,0,0,0,0],[0,0,1,0,0,0,0,0],[0,0,0,1,0,0,0,0],[0,0,0,0,1,0,0,0],[0,0,0,0,0,1,0,0],[0,0,0,0,0,0,1,0],[0,0,0,0,0,0,0,1]];
