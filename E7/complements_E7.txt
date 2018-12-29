@@ -7,7 +7,7 @@
 #### the set of defining relations of C_W(w)
 ####
 
-###################################################
+############################################################################################
 #### representatives of conjugacy classes of W(E7). Actually, we list only 30, other representatives can be obtained by 
 #### multiplying on w0 (central element of W(E7))
 ####
@@ -396,13 +396,13 @@ a:=x*n0;
 x*a*x^-1*a^-1 eq 1;
 a^14 eq 1;
 
-
 #####################################################################################
 #####  Non-splitting tori for E7
-#####  here we verify that in non-splitting cases there exists an elemen y which is conjugate to w
-#####  and that commuts with w[2]*w[5], w[49] and w[63] 
-#####  Then in MAGMA we verify a preimage x of y such that |x|=|y|
-#####
+#####  here we verify that in non-splitting cases there exists an element y which is conjugate to w in W
+#####  and that commutes with w[2]*w[5], w[49] and w[63]. 
+#####  Then we verify in MAGMA that a preimage x1 of y commutes with n[2]*n[5], n[61] and n[97].
+#####  Finally, we verify a preimage x2 of y such that |x|=|y|.
+
 
 ### Torus 1 
 
