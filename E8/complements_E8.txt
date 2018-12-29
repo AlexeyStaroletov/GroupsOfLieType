@@ -1,0 +1,1757 @@
+##########################################
+#### Splitting maximal tori of E8(q) #####
+#### File contains calculations that verify complements for maximal tori of E8(q) in their algebraic normalizers
+#### each case is divided into two parts. The first part contains commands for GAP. We verify generators and relations
+#### for C_W(w).
+#### The second part devotes to computations in MAGMA. We verify that specific preimages of generators of C_W(w) satisfy
+#### the set of defining relations of C_W(w)
+####
+
+###################################################
+#### representatives of conjugacy classes of W(E8). Actually, we list only 67, other representatives can be obtained by 
+#### multiplying on w0 (central element of W(E8))
+####
+
+cong_reps:=[w[1]^2, w[1], w[1]*w[2], w[3]*w[1], w[2]*w[3]*w[5], w[1]*w[3]*w[5], w[1]*w[3]*w[4], w[1]*w[4]*w[6]*w[69], w[1]*w[2]*w[3]*w[5], w[1]*w[5]*w[3]*w[6], w[1]*w[4]*w[6]*w[3], w[1]*w[4]*w[3]*w[2],
+w[3]*w[2]*w[5]*w[4], w[3]*w[2]*w[4]*w[18], w[1]*w[5]*w[3]*w[6]*w[2], w[1]*w[4]*w[6]*w[3]*w[69], w[1]*w[4]*w[5]*w[3]*w[69], w[1]*w[4]*w[6]*w[3]*w[5], w[2]*w[5]*w[3]*w[4]*w[6], w[26]*w[5]*w[4]*w[3]*w[2], w[1]*w[5]*w[2]*w[3]*w[6]*w[69], w[1]*w[4]*w[6]*w[3]*w[5]*w[69], 
+w[1]*w[4]*w[6]*w[3]*w[2]*w[5], w[1]*w[4]*w[18]*w[3]*w[2]*w[6], w[1]*w[4]*w[18]*w[3]*w[2]*w[48], w[1]*w[4]*w[6]*w[3]*w[7], w[1]*w[4]*w[6]*w[2]*w[3]*w[7],
+w[3]*w[2]*w[4]*w[18]*w[7], w[1]*w[4]*w[6]*w[3]*w[5]*w[7], w[46]*w[3]*w[5]*w[1]*w[4]*w[6], w[2]*w[3]*w[5]*w[7], w[74]*w[3]*w[2]*w[5]*w[4], w[8]*w[1]*w[4]*w[6]*w[3], w[1]*w[5]*w[3]*w[6]*w[2]*w[8], w[1]*w[2]*w[3]*w[6]*w[8]*w[7],
+w[1]*w[4]*w[3]*w[7]*w[6]*w[8], 
+w[4]*w[8]*w[2]*w[5]*w[7]*w[120], w[1]*w[8]*w[2]*w[4]*w[5]*w[6], w[1]*w[2]*w[4]*w[6]*w[5]*w[7], 
+w[2]*w[3]*w[5]*w[7]*w[4]*w[8], w[2]*w[3]*w[4]*w[8]*w[7]*w[18], w[2]*w[3]*w[4]*w[5]*w[6]*w[8],
+w[1]*w[5]*w[8]*w[2]*w[3]*w[6]*w[69], w[1]*w[5]*w[7]*w[2]*w[3]*w[6]*w[8], w[1]*w[4]*w[2]*w[3]*w[6]*w[8]*w[7], w[1]*w[4]*w[6]*w[3]*w[5]*w[7]*w[120], w[1]*w[3]*w[4]*w[5]*w[6]*w[7]*w[8], w[2]*w[4]*w[5]*w[6]*w[7]*w[8]*w[120],
+w[2]*w[3]*w[4]*w[7]*w[120]*w[8]*w[18], w[2]*w[3]*w[5]*w[4]*w[8]*w[6]*w[35], w[26]*w[5]*w[4]*w[3]*w[2]*w[120]*w[8],  w[1]*w[4]*w[6]*w[3]*w[2]*w[5]*w[8], w[1]*w[4]*w[18]*w[3]*w[2]*w[6]*w[8], w[1]*w[4]*w[18]*w[3]*w[2]*w[48]*w[8],
+w[2]*w[3]*w[4]*w[5]*w[6]*w[7]*w[8], w[1]*w[2]*w[3]*w[5]*w[6]*w[8]*w[120]*w[69], w[1]*w[4]*w[2]*w[3]*w[6]*w[8]*w[7]*w[120], w[1]*w[3]*w[4]*w[5]*w[6]*w[7]*w[8]*w[120], w[2]*w[3]*w[4]*w[7]*w[120]*w[18]*w[8]*w[74],
+w[2]*w[3]*w[5]*w[7]*w[4]*w[6]*w[8]*w[114], w[4]*w[6]*w[8]*w[113]*w[3]*w[5]*w[32]*w[7], w[1]*w[2]*w[3]*w[4]*w[5]*w[6]*w[8]*w[120], w[1]*w[4]*w[6]*w[8]*w[3]*w[32]*w[5]*w[120], w[1]*w[2]*w[3]*w[4]*w[5]*w[6]*w[7]*w[8],
+w[1]*w[4]*w[6]*w[8]*w[32]*w[5]*w[7]*w[120], w[1]*w[4]*w[6]*w[8]*w[32]*w[2]*w[5]*w[7], w[2]*w[32]*w[5]*w[7]*w[1]*w[4]*w[6]*w[65] ];
+
+
+w0:=w[1]*w[2]*w[5]*w[7]*w[44]*w[71]*w[89]*w[120]; ### GAP
+
+
+n0:=h[2]*h[5]*h[7]*n[1]*n[2]*n[5]*n[7]*n[44]*n[71]*n[89]*n[120]; ### MAGMA
+
+##### Torus 10 #####
+
+x:=w[1]*w[5]*w[3]*w[6];;
+C:=Centralizer(W, x);;
+
+F:=FreeGroup(9);;
+a:=F.1;; b:=F.2;; c:=F.3;; d:=F.4;; e:=F.5;; f:=F.6;; g:=F.7;; i:=F.8;; j:=F.9;;
+rel:=[a^3, b^2, c^2, d^2, e^2, f^2, g^2, i^2, j^2, 
+a*b*a^-1*b^-1, a*c*a^-1*c^-1, a*d*a^-1*d^-1, a*e*a^-1*e^-1, a*f*a^-1*f^-1, a*g*a^-1*g^-1, a*i*a^-1*i^-1, a*j*a^-1*j^-1,
+b*c*b^-1*c^-1, b*d*b^-1*d^-1, b*e*b^-1*e^-1, b*f*b^-1*f^-1, b*g*b^-1*g^-1, b*i*b^-1*i^-1, b*j*b^-1*j^-1,
+c*e*c^-1*e^-1, c*f*c^-1*f^-1, c*g*c^-1*g^-1, c*i*c^-1*i^-1,
+d*e*d^-1*e^-1, d*f*d^-1*f^-1, d*g*d^-1*g^-1, d*i*d^-1*i^-1,
+e*g*e^-1*g^-1, e*i*e^-1*i^-1,
+f*g*f^-1*g^-1, f*i*f^-1*i^-1,
+(c*d)^3, (e*f)^3, (g*i)^3, j*c*j*e, j*d*j*f, j*g*j*b*g, j*i*j*b*i];;
+G:=F/rel;;
+Order(G) = Order(C);
+
+a:=x;;
+b:=w0;;
+c:=w[2];;
+d:=w[69];;
+e:=w[8];;
+f:=w[120];;
+g:=w[2]*w[37]*w[40]*w[57];;
+i:=w[2]*w[32]*w[51]*w[52];;
+j:=w[1]*w[34]*w[36]*w[84];;
+
+
+a in C; b in C; c in C; d in C; e in C; f in C; g in C; i in C; j in C;
+Order(Group(a,b,c,d,e,f,g,i,j)) = Order(C);
+
+
+a^3 = id; b^2 = id; c^2 = id; d^2 = id; e^2 = id; f^2 = id; g^2 = id; i^2 = id; j^2 = id;
+a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id; a*d*a^-1*d^-1 = id; a*e*a^-1*e^-1 = id; a*f*a^-1*f^-1 = id; a*g*a^-1*g^-1 = id; a*i*a^-1*i^-1 = id; a*j*a^-1*j^-1 = id;
+b*c*b^-1*c^-1 = id; b*d*b^-1*d^-1 = id; b*e*b^-1*e^-1 = id; b*f*b^-1*f^-1 = id; b*g*b^-1*g^-1 = id; b*i*b^-1*i^-1 = id; b*j*b^-1*j^-1 = id;
+c*e*c^-1*e^-1 = id; c*f*c^-1*f^-1 = id; c*g*c^-1*g^-1 = id; c*i*c^-1*i^-1 = id;
+d*e*d^-1*e^-1 = id; d*f*d^-1*f^-1 = id; d*g*d^-1*g^-1 = id; d*i*d^-1*i^-1 = id;
+e*g*e^-1*g^-1 = id; e*i*e^-1*i^-1 = id;
+f*g*f^-1*g^-1 = id; f*i*f^-1*i^-1 = id;
+(c*d)^3 = id; (e*f)^3 = id; (g*i)^3 = id; j*c*j*e = id; j*d*j*f = id; j*g*j*b*g = id; j*i*j*b*i = id;
+
+
+### MAGMA code
+
+x:=n[1]*n[5]*n[3]*n[6];
+a:=x;
+b:=n0;
+c:=h[69]*n[2];
+d:=h[2]*n[69];
+e:=h[120]*n[8];
+f:=h[8]*n[120];
+g:=h[1]*h[6]*n[2]*n[37]*n[40]*n[57];
+i:=h[1]*h[3]*h[6]*n[2]*n[32]*n[51]*n[52];
+j:=h[2]*h[8]*n[1]*n[34]*n[36]*n[84];
+
+a^3 eq 1; b^2 eq 1; c^2 eq 1; d^2 eq 1; e^2 eq 1; f^2 eq 1; g^2 eq 1; i^2 eq 1; j^2 eq 1;
+a*b*a^-1*b^-1 eq 1; a*c*a^-1*c^-1 eq 1; a*d*a^-1*d^-1 eq 1; a*e*a^-1*e^-1 eq 1; a*f*a^-1*f^-1 eq 1; a*g*a^-1*g^-1 eq 1; a*i*a^-1*i^-1 eq 1; a*j*a^-1*j^-1 eq 1;
+b*c*b^-1*c^-1 eq 1; b*d*b^-1*d^-1 eq 1; b*e*b^-1*e^-1 eq 1; b*f*b^-1*f^-1 eq 1; b*g*b^-1*g^-1 eq 1; b*i*b^-1*i^-1 eq 1; b*j*b^-1*j^-1 eq 1;
+c*e*c^-1*e^-1 eq 1; c*f*c^-1*f^-1 eq 1; c*g*c^-1*g^-1 eq 1; c*i*c^-1*i^-1 eq 1;
+d*e*d^-1*e^-1 eq 1; d*f*d^-1*f^-1 eq 1; d*g*d^-1*g^-1 eq 1; d*i*d^-1*i^-1 eq 1;
+e*g*e^-1*g^-1 eq 1; e*i*e^-1*i^-1 eq 1;
+f*g*f^-1*g^-1 eq 1; f*i*f^-1*i^-1 eq 1;
+(c*d)^3 eq 1; (e*f)^3 eq 1; (g*i)^3 eq 1; j*c*j*e eq 1; j*d*j*f eq 1; j*g*j*b*g eq 1; j*i*j*b*i eq 1;
+
+
+##### Torus 12 #####
+
+x:=w[1]*w[4]*w[3]*w[2];;
+C:=Centralizer(W, x);;
+
+F:=FreeGroup(5);;
+a:=F.1;; b:=F.2;; c:=F.3;; d:=F.4;; e:=F.5;;
+rel:=[a^10, b^2, c^2, d^2, e^2, a*b*a^-1*b^-1, a*c*a^-1*c^-1, a*d*a^-1*d^-1, a*e*a^-1*e^-1, (b*c)^3, (b*d)^2, (b*e)^2, (c*d)^3, (c*e)^2, (d*e)^3];;
+G:=F/rel;;
+Order(G) = Order(C);
+
+a:=x*w0;;
+b:=w[6];;
+c:=w[7];;
+d:=w[8];;
+e:=w[120];;
+
+a in C; b in C; c in C; d in C; e in C;
+Order(C) = Order(Group(a,b,c,d,e));
+
+a^10 = id; b^2 = id; c^2 = id; d^2 = id; e^2 = id; a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id; a*d*a^-1*d^-1 = id; 
+a*e*a^-1*e^-1 = id; (b*c)^3 = id; (b*d)^2 = id; (b*e)^2 = id; (c*d)^3 = id; (c*e)^2 = id; (d*e)^3 = id;
+
+### MAGMA Code
+
+x:=n[1]*n[4]*n[3]*n[2];
+a:=x*n0;
+b:=h[2]*h[5]*n[6];
+c:=h[2]*h[5]*h[6]*n[7];
+d:=h[2]*h[5]*h[6]*h[7]*n[8];
+e:=h[6]*h[8]*n[120];
+
+x*a*x^-1*a^-1 eq 1; x*b*x^-1*b^-1 eq 1; x*c*x^-1*c^-1 eq 1; x*d*x^-1*d^-1 eq 1; x*e*x^-1*e^-1 eq 1;
+
+a^10 eq 1; b^2 eq 1; c^2 eq 1; d^2 eq 1; e^2 eq 1; a*b*a^-1*b^-1 eq 1; a*c*a^-1*c^-1 eq 1; a*d*a^-1*d^-1 eq 1; 
+a*e*a^-1*e^-1 eq 1; (b*c)^3 eq 1; (b*d)^2 eq 1; (b*e)^2 eq 1; (c*d)^3 eq 1; (c*e)^2 eq 1; (d*e)^3 eq 1;
+
+##### Torus 15 #####
+
+x:=w[1]*w[5]*w[3]*w[6]*w[2];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(6);;
+a:=F.1;; b:=F.2;; c:=F.3;; d:=F.4;; e:=F.5;; f:=F.6;;
+rel:=[a^6, b^2, c^2, d^2, e^2, f^2, (c*d)^3, (e*f)^3, (c*e)^2, (c*f)^2, (d*e)^2, (d*f)^2,
+a*b*a^-1*b^-1, a*c*a^-1*c^-1, a*d*a^-1*d^-1, a*e*a^-1*e^-1, a*f*a^-1*f^-1,
+b*c*b^-1*c^-1, b*d*b^-1*d^-1, b*e*b^-1*e^-1, b*f*b^-1*f^-1];;
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x;;
+b:=w0;;
+c:=w[8];;
+d:=w[120];;
+e:=w[32]*w[51]*w[52];;
+f:=w[37]*w[40]*w[57];;
+
+a in C; b in C; c in C; d in C; e in C; f in C;
+Order(C) = Order(Group(a,b,c,d,e,f));
+
+a^6 = id; b^2 = id; c^2 = id; d^2 = id; e^2 = id; f^2 = id; 
+(c*d)^3 = id; (e*f)^3 = id; (c*e)^2 = id; (c*f)^2 = id; (d*e)^2 = id; (d*f)^2 = id;
+a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id; a*d*a^-1*d^-1 = id; a*e*a^-1*e^-1 = id; a*f*a^-1*f^-1 = id;
+b*c*b^-1*c^-1 = id; b*d*b^-1*d^-1 = id; b*e*b^-1*e^-1 = id; b*f*b^-1*f^-1 = id;
+
+
+### MAGMA Code
+
+x:=h[4]*n[1]*n[5]*n[3]*n[6]*n[2];
+a:=x;
+b:=n0;
+c:=h[120]*n[8];
+d:=h[8]*n[120];
+e:=h[1]*h[4]*h[6]*n[32]*n[51]*n[52];
+f:=h[4]*n[37]*n[40]*n[57];
+
+a^6 eq 1; b^2 eq 1; c^2 eq 1; d^2  eq 1; e^2 eq 1; f^2 eq 1; 
+(c*d)^3 eq 1; (e*f)^3 eq 1; (c*e)^2 eq 1; (c*f)^2 eq 1; (d*e)^2 eq 1; (d*f)^2 eq 1;
+a*b*a^-1*b^-1 eq 1; a*c*a^-1*c^-1 eq 1; a*d*a^-1*d^-1 eq 1; a*e*a^-1*e^-1 eq 1; a*f*a^-1*f^-1 eq 1;
+b*c*b^-1*c^-1 eq 1; b*d*b^-1*d^-1 eq 1; b*e*b^-1*e^-1 eq 1; b*f*b^-1*f^-1 eq 1;
+
+##### Torus 17 #####
+
+x:=w[1]*w[4]*w[5]*w[3]*w[69];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(4);
+a:=F.1;; b:=F.2;; c:=F.3;; d:=F.4;;
+rel:=[a^10, b^2, c^2, d^2, (c*d)^3, a*b*a^-1*b^-1, a*c*a^-1*c^-1, a*d*a^-1*d^-1, b*c*b^-1*c^-1, b*d*b^-1*d^-1];;
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x;;
+b:=w0;;
+c:=w[8];;
+d:=w[120];;
+
+a in C; b in C; c in C; d in C;
+Order(Group(a,b,c,d)) = Order(C);
+
+a^10 = id; b^2 = id; c^2 =id; d^2 = id; (c*d)^3 = id; 
+a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id; a*d*a^-1*d^-1 = id; b*c*b^-1*c^-1 = id; b*d*b^-1*d^-1 = id;
+
+### MAGMA Code
+
+x:=h[2]*n[1]*n[4]*n[5]*n[3]*n[69];
+a:=x;
+b:=n0;
+c:=h[2]*h[5]*h[7]*n[8];
+d:=h[8]*n[120];
+
+a^10 eq 1; b^2 eq 1; c^2 eq 1; d^2 eq 1; (c*d)^3 eq 1; 
+a*b*a^-1*b^-1 eq 1; a*c*a^-1*c^-1 eq 1; a*d*a^-1*d^-1 eq 1; b*c*b^-1*c^-1 eq 1; b*d*b^-1*d^-1 eq 1;
+
+##### Torus 18 #####
+
+x:=w[1]*w[4]*w[6]*w[3]*w[5];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(5);;
+a:=F.1;; b:=F.2;; c:=F.3;; d:=F.4;; e:=F.5;;
+rel:=[a^6, b^2, c^2, d^2, e^2, (d*e)^3,
+a*b*a^-1*b^-1, a*c*a^-1*c^-1, a*d*a^-1*d^-1, a*e*a^-1*e^-1, 
+b*c*b^-1*c^-1, b*d*b^-1*d^-1, b*e*b^-1*e^-1, 
+c*d*c^-1*d^-1, c*e*c^-1*e^-1];;
+
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x;;
+b:=w0;;
+c:=w[69];;
+d:=w[8];;
+e:=w[120];;
+
+a in C; b in C; c in C; d in C; e in C;
+Order(Group(a,b,c,d,e)) = Order(C);
+
+a^6 = id; b^2 = id; c^2= id; d^2 = id; e^2 = id; (d*e)^3 = id;
+a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id; a*d*a^-1*d^-1 = id; a*e*a^-1*e^-1 = id;
+b*c*b^-1*c^-1 = id; b*d*b^-1*d^-1 = id; b*e*b^-1*e^-1 = id; c*d*c^-1*d^-1 = id; c*e*c^-1*e^-1 = id;
+
+### MAGMA Code
+
+x:=h[2]*n[1]*n[4]*n[6]*n[3]*n[5];
+a:=x;
+b:=n0;
+c:=h[2]*h[3]*h[5]*n[69];
+d:=h[2]*h[5]*h[7]*n[8];
+e:=h[8]*n[120];
+
+a^6 eq 1; b^2 eq 1; c^2 eq 1; d^2 eq 1; e^2 eq 1; (d*e)^3 eq 1;
+a*b*a^-1*b^-1 eq 1; a*c*a^-1*c^-1 eq 1; a*d*a^-1*d^-1 eq 1; a*e*a^-1*e^-1 eq 1;
+b*c*b^-1*c^-1 eq 1; b*d*b^-1*d^-1 eq 1; b*e*b^-1*e^-1 eq 1; c*d*c^-1*d^-1 eq 1; c*e*c^-1*e^-1 eq 1;
+
+##### Torus 21 #####
+
+x:=w[1]*w[5]*w[2]*w[3]*w[6]*w[69];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(5);;
+a:=F.1;; b:=F.2;; c:=F.3;; d:=F.4;; e:=F.5;;
+rel:=[a^2, b^2, c^2, d^12, e^6, (b*c)^3,
+a*b*a^-1*b^-1, a*c*a^-1*c^-1, a*d*a^-1*d^-1, a*e*a^-1*e^-1, 
+b*d*b^-1*d^-1, b*e*b^-1*e^-1, c*d*c^-1*d^-1, c*e*c^-1*e^-1,
+d^8*e*d^-8*e^-1, (d^6*e^-1)^3, d^6*e^2*d^6*e^-2, e*d^8*(d^-1*e)^2*d^-1];;
+
+G:=F/rel;;
+Order(G) = Order(C);
+
+a:=w0;;
+b:=w[8];;
+c:=w[120];;
+d:=w[1]*w[2]*w[6]*w[4]*w[17]*w[26];;
+e:=w[1]*w[2]*w[6]*w[18]*w[33]*w[45];;
+
+a in C; b in C; c in C; d in C; e in C;
+Order(Group(a,b,c,d,e)) = Order(C);
+
+a^2 = id; b^2 = id; c^2 = id; d^12 = id; e^6 = id; (b*c)^3 = id;
+a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id; a*d*a^-1*d^-1 = id; a*e*a^-1*e^-1 = id; 
+b*d*b^-1*d^-1 = id; b*e*b^-1*e^-1 = id; c*d*c^-1*d^-1 = id; c*e*c^-1*e^-1 = id;
+d^8*e*d^-8*e^-1 = id; (d^6*e^-1)^3 = id; d^6*e^2*d^6*e^-2 = id; e*d^8*(d^-1*e)^2*d^-1 = id;
+
+### MAGMA code
+
+x:=n[1]*n[5]*n[2]*n[3]*n[6]*n[69];
+
+a:=n0;
+b:=h[120]*n[8];
+c:=h[8]*n[120];
+d:=h[4]*h[5]*n[1]*n[2]*n[6]*n[4]*n[17]*n[26];
+e:=h[6]*n[1]*n[2]*n[6]*n[18]*n[33]*n[45];
+
+x*a*x^-1*a^-1 eq 1; x*b*x^-1*b^-1 eq 1; x*c*x^-1*c^-1 eq 1; x*d*x^-1*d^-1 eq 1; x*e*x^-1*e^-1 eq 1;
+
+a^2 eq 1; b^2 eq 1; c^2 eq 1; d^12 eq 1; e^6 eq 1; (b*c)^3 eq 1;
+a*b*a^-1*b^-1 eq 1; a*c*a^-1*c^-1 eq 1; a*d*a^-1*d^-1 eq 1; a*e*a^-1*e^-1 eq 1; 
+b*d*b^-1*d^-1 eq 1; b*e*b^-1*e^-1 eq 1; c*d*c^-1*d^-1 eq 1; c*e*c^-1*e^-1 eq 1;
+d^8*e*d^-8*e^-1 eq 1; (d^6*e^-1)^3 eq 1; d^6*e^2*d^6*e^-2 eq 1; e*d^8*(d^-1*e)^2*d^-1 eq 1;
+
+##### Torus 22 #####
+
+x:=w[1]*w[4]*w[6]*w[3]*w[5]*w[69];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(6);;
+a:=F.1;; b:=F.2;; c:=F.3;; d:=F.4;; e:=F.5;; f:=F.6;;
+rel:=[a^6, b^2, c^2, d^2, e^2, f^2, (c*d)^3, (e*f)^3, (c*e)^2, (c*f)^2, (d*e)^2, (d*f)^2,
+a*b*a^-1*b^-1, a*c*a^-1*c^-1, a*d*a^-1*d^-1, a*e*a^-1*e^-1, a*f*a^-1*f^-1,
+b*c*b^-1*c^-1, b*d*b^-1*d^-1, b*e*b^-1*e^-1, b*f*b^-1*f^-1];;
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x;;
+b:=w0;;
+c:=w[8];;
+d:=w[120];;
+e:=w[32];;
+f:=w[69];;
+
+a in C; b in C; c in C; d in C; e in C; f in C;
+Order(C) = Order(Group(a,b,c,d,e,f));
+
+a^6 = id; b^2 = id; c^2 = id; d^2 = id; e^2 = id; f^2 = id; (c*d)^3 = id; (e*f)^3 = id; (c*e)^2 = id; (c*f)^2 = id; (d*e)^2 = id; (d*f)^2 = id;
+a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id; a*d*a^-1*d^-1 = id; a*e*a^-1*e^-1 = id; a*f*a^-1*f^-1 = id;
+b*c*b^-1*c^-1 = id; b*d*b^-1*d^-1 = id; b*e*b^-1*e^-1 = id; b*f*b^-1*f^-1 = id;
+
+### MAGMA Code
+
+x:=h[1]*h[4]*h[6]*n[1]*n[4]*n[6]*n[3]*n[5]*n[69];
+a:=x;
+b:=n0;
+c:=h[120]*n[8];
+d:=h[8]*n[120];
+e:=h[69]*n[32];
+f:=h[32]*n[69];
+
+a^6 eq 1; b^2 eq 1; c^2 eq 1; d^2  eq 1; e^2 eq 1; f^2 eq 1; (c*d)^3 eq 1; (e*f)^3 eq 1; (c*e)^2 eq 1; (c*f)^2 eq 1; (d*e)^2 eq 1; (d*f)^2 eq 1;
+a*b*a^-1*b^-1 eq 1; a*c*a^-1*c^-1 eq 1; a*d*a^-1*d^-1 eq 1; a*e*a^-1*e^-1 eq 1; a*f*a^-1*f^-1 eq 1;
+b*c*b^-1*c^-1 eq 1; b*d*b^-1*d^-1 eq 1; b*e*b^-1*e^-1 eq 1; b*f*b^-1*f^-1 eq 1;
+
+##### Torus 23 #####
+
+x:=w[1]*w[4]*w[6]*w[3]*w[2]*w[5];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(4);;
+a:=F.1;; b:=F.2;; c:=F.3;; d:=F.4;; 
+rel:=[a^12, b^2, c^2, d^2, (c*d)^3, a*b*a^-1*b^-1, a*c*a^-1*c^-1, a*d*a^-1*d^-1, b*c*b^-1*c^-1, b*d*b^-1*d^-1];
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x;;
+b:=w0;;
+c:=w[8];;
+d:=w[120];;
+
+a in C; b in C; c in C; d in C;
+Order(C) = Order(Group(a,b,c,d));
+
+a^12 = id; b^2 = id; c^2 = id; d^2 = id; (c*d)^3 = id;
+a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id; a*d*a^-1*d^-1 = id;
+b*c*b^-1*c^-1 = id; b*d*b^-1*d^-1 = id;
+
+### MAGMA Code
+
+x:=n[1]*n[4]*n[6]*n[3]*n[2]*n[5];
+a:=x;
+b:=n0;
+c:=h[120]*n[8];
+d:=h[8]*n[120];
+
+a^12 eq 1; b^2 eq 1; c^2 eq 1; d^2 eq 1; (c*d)^3 eq 1;
+a*b*a^-1*b^-1 eq 1; a*c*a^-1*c^-1 eq 1; a*d*a^-1*d^-1 eq 1;
+b*c*b^-1*c^-1 eq 1; b*d*b^-1*d^-1 eq 1;
+
+##### Torus 24 #####
+
+x:=w[1]*w[4]*w[18]*w[3]*w[2]*w[6];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(3);;
+a:=F.1;; b:=F.2;; c:=F.3;;
+rel:=[a^18, b^2, c^2, (b*c)^3, a*b*a^-1*b^-1, a*c*a^-1*c^-1];;
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x*w0;;
+b:=w[8];;
+c:=w[120];;
+
+a in C; b in C; c in C;
+Order(C) = Order(Group(a,b,c));
+a^18 = id; b^2 = id; c^2 = id; (b*c)^3 = id; a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id;
+
+### MAGMA Code
+
+x:=n[1]*n[4]*n[18]*n[3]*n[2]*n[6];
+a:=x*n0;
+b:=h[120]*n[8];
+c:=h[8]*n[120];
+
+x*a*x^-1*a^-1 eq 1; x*b*x^-1*b^-1 eq  1; x*c*x^-1*c^-1 eq 1;
+
+a^18 eq 1; b^2  eq 1; c^2 eq 1; (b*c)^3 eq 1; a*b*a^-1*b^-1 eq 1; a*c*a^-1*c^-1 eq 1;
+
+##### Torus 25 #####
+
+x:=w[1]*w[4]*w[18]*w[3]*w[2]*w[48];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(5);;
+a:=F.1;; b:=F.2;; c:=F.3;; d:=F.4;; e:=F.5;;
+rel:=[a^6, b^2, c^2, (b*c)^3, d^4, e^3, d*e*d^-1*e*d*e, (e^-1*d)^3, 
+a*b*a^-1*b^-1, a*c*a^-1*c^-1, a*d*a^-1*d^-1, a*e*a^-1*e^-1, b*d*b^-1*d^-1, b*e*b^-1*e^-1, c*d*c^-1*d^-1, c*e*c^-1*e^-1];;
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x^2*w0;;
+b:=w[8];;
+c:=w[120];;
+d:=w[3]*w[6]*w[25]*w[37];;
+e:=w[1]*w[4]*w[6]*w[17]*w[26]*w[57];;
+
+a in C; b in C; c in C; d in C; e in C;
+Order(Group(a,b,c,d,e)) = Order(C);
+
+a^6 = id; b^2 = id; c^2 = id; (b*c)^3 = id; d^4 = id; e^3 = id; d*e*d^-1*e*d*e = id; (e^-1*d)^3 = id; 
+a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id; a*d*a^-1*d^-1 = id; a*e*a^-1*e^-1 = id; 
+b*d*b^-1*d^-1 = id; b*e*b^-1*e^-1 = id; c*d*c^-1*d^-1 = id; c*e*c^-1*e^-1 = id;
+
+### MAGMA code
+
+x:=n[1]*n[4]*n[18]*n[3]*n[2]*n[48];
+a:=x^2*n0;
+b:=h[120]*n[8];
+c:=h[8]*n[120];
+d:=h[1]*h[2]*h[5]*n[3]*n[6]*n[25]*n[37];
+e:=h[1]*h[2]*h[4]*h[6]*n[1]*n[4]*n[6]*n[17]*n[26]*n[57];
+
+x*a*x^-1*a^-1 eq 1; x*b*x^-1*b^-1 eq  1; x*c*x^-1*c^-1 eq 1; x*d*x^-1*d^-1 eq 1; x*e*x^-1*e^-1 eq 1;
+
+a^6 eq 1; b^2 eq 1; c^2 eq 1; (b*c)^3 eq 1; d^4 eq 1; e^3 eq 1; d*e*d^-1*e*d*e eq 1; (e^-1*d)^3 eq 1; 
+a*b*a^-1*b^-1 eq 1; a*c*a^-1*c^-1 eq 1; a*d*a^-1*d^-1 eq 1; a*e*a^-1*e^-1 eq 1; 
+b*d*b^-1*d^-1 eq 1; b*e*b^-1*e^-1 eq 1; c*d*c^-1*d^-1 eq 1; c*e*c^-1*e^-1 eq 1;
+
+##### Torus 27 #####
+
+x:=w[1]*w[4]*w[6]*w[2]*w[3]*w[7];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(2);;
+a:=F.1;; b:=F.2;;
+rel:=[a^30, b^2, a*b*a^-1*b^-1];;
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x*w0;;
+b:=w[120];;
+
+a in C; b in C;
+Order(Group(a,b)) = Order(C);
+
+a^30 = id; b^2 = id; a*b*a^-1*b^-1 = id;
+
+### Magma Code
+
+x:=n[1]*n[4]*n[6]*n[2]*n[3]*n[7];
+a:=x*n0;
+b:=h[6]*h[8]*n[120];
+
+x*a*x^-1*a^-1 eq 1; x*b*x^-1*b^-1 eq 1;
+
+a^30 eq 1; b^2 eq 1; a*b*a^-1*b^-1 eq 1;
+
+##### Torus 29 #####
+
+x:=w[1]*w[4]*w[6]*w[3]*w[5]*w[7];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(2);;
+a:=F.1;; b:=F.2;;
+rel:=[a^14, b^2, a*b*a^-1*b^-1];;
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x*w0;;
+b:=w[120];;
+
+a in C; b in C;
+Order(Group(a,b)) = Order(C);
+
+a^14 = id; b^2 = id; a*b*a^-1*b^-1 = id;
+
+### Magma Code
+
+x:=n[1]*n[4]*n[6]*n[3]*n[5]*n[7];
+a:=x*n0;
+b:=h[1]*h[4]*h[6]*h[8]*n[120];
+
+x*a*x^-1*a^-1 eq 1; x*b*x^-1*b^-1 eq 1;
+
+a^14 eq 1; b^2 eq 1; a*b*a^-1*b^-1 eq 1;
+
+##### Torus 34 #####
+
+x:=w[1]*w[5]*w[3]*w[6]*w[2]*w[8];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(6);;
+a:=F.1;; b:=F.2;; c:=F.3;; d:=F.4;; e:=F.5;; f:=F.6;;
+rel:=[a^6, b^2, c^2, d^2, e^2, f^2, (d*e)^3,
+a*b*a^-1*b^-1, a*c*a^-1*c^-1, a*d*a^-1*d^-1, a*e*a^-1*e^-1, a*f*a^-1*f^-1,
+b*c*b^-1*c^-1, b*d*b^-1*d^-1, b*e*b^-1*e^-1, b*f*b^-1*f^-1,
+c*d*c^-1*d^-1, c*e*c^-1*e^-1,
+f*c*f*a^3*c, f*d*f*a^3*b*d, f*e*f*a^3*b*e];;
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x;;
+b:=w0;;
+c:=w[2];;
+d:=w[32]*w[51]*w[52];;
+e:=w[37]*w[40]*w[57];;
+f:=w[1]*w[28]*w[42]*w[84];;
+
+a in C; b in C; c in C; d in C; e in C; f in C;
+Order(Group(a,b,c,d,e,f)) = Order(C);
+
+a^6 = id; b^2 = id; c^2 = id; d^2 = id; e^2 = id; f^2 = id; (d*e)^3 = id;
+a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id; a*d*a^-1*d^-1 = id; a*e*a^-1*e^-1 = id; a*f*a^-1*f^-1 = id;
+b*c*b^-1*c^-1 = id; b*d*b^-1*d^-1 = id; b*e*b^-1*e^-1 = id; b*f*b^-1*f^-1 = id;
+c*d*c^-1*d^-1 = id; c*e*c^-1*e^-1  = id;
+f*c*f*a^3*c = id; f*d*f*a^3*b*d = id; f*e*f*a^3*b*e = id;
+
+### MAGMA code
+
+x:=h[4]*h[7]*n[1]*n[5]*n[3]*n[6]*n[2]*n[8];
+a:=x;
+b:=n0;
+c:=h[1]*h[2]*h[4]*h[6]*n[2];
+d:=h[3]*h[4]*n[32]*n[51]*n[52];
+e:=h[1]*h[4]*h[6]*n[37]*n[40]*n[57];
+f:=h[4]*h[5]*h[6]*h[7]*n[1]*n[28]*n[42]*n[84];
+
+a^6 eq 1; b^2 eq 1; c^2 eq 1; d^2 eq 1; e^2 eq 1; f^2 eq 1; (d*e)^3 eq 1;
+a*b*a^-1*b^-1 eq 1; a*c*a^-1*c^-1 eq 1; a*d*a^-1*d^-1 eq 1; a*e*a^-1*e^-1 eq 1; a*f*a^-1*f^-1 eq 1;
+b*c*b^-1*c^-1 eq 1; b*d*b^-1*d^-1 eq 1; b*e*b^-1*e^-1 eq 1; b*f*b^-1*f^-1 eq 1;
+c*d*c^-1*d^-1 eq 1; c*e*c^-1*e^-1 eq 1;
+f*c*f*a^3*c eq 1; f*d*f*a^3*b*d eq 1; f*e*f*a^3*b*e eq 1;
+
+##### Torus 38 #####
+
+x:=w[1]*w[8]*w[2]*w[4]*w[5]*w[6];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(3);;
+a:=F.1;; b:=F.2;; c:=F.3;;
+rel:=[a^10, b^2, c^2, (b*c)^4, a*b*a^-1*b^-1, a*c*a^-1*c^-1];;
+
+G:=F/rel;;
+Order(G) = Order(C);
+
+a:=x*w0;;
+b:=w[97]*w[98];;
+c:=w[8];;
+
+a in C; b in C; c in C;
+Order(Group(a,b,c)) = Order(C);
+a^10 = id; b^2 = id; c^2 = id; (b*c)^4 = id; a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id;
+
+### MAGMA code
+
+x:=h[3]*h[7]*n[1]*n[8]*n[2]*n[4]*n[5]*n[6];
+
+a:=x*n0;
+b:=h[8]*n[97]*n[98];
+c:=h[2]*h[5]*h[7]*n[8];
+
+x*a*x^-1*a^-1 eq 1; x*b*x^-1*b^-1 eq 1; x*c*x^-1*c^-1 eq 1;
+
+a^10 eq 1; b^2 eq 1; c^2 eq 1; (b*c)^4 eq 1; a*b*a^-1*b^-1 eq 1; a*c*a^-1*c^-1 eq 1;
+
+##### Torus 39 #####
+
+x:=w[1]*w[2]*w[4]*w[6]*w[5]*w[7];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(4);;
+a:=F.1;; b:=F.2;; c:=F.3;; d:=F.4;;
+rel:=[a^6, b^2, c^2, d^2, a*b*a^-1*b^-1, a*c*a^-1*c^-1, a*d*a^-1*d^-1, b*c*b^-1*c^-1, b*d*b^-1*d^-1, c*d*c^-1*d^-1];;
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x;;
+b:=w0;;
+c:=w[1];;
+d:=w[120];;
+
+a in C; b in C; c in C; d in C;
+Order(Group(a,b,c,d)) = Order(C);
+
+a^6 = id; b^2 = id; c^2 = id; d^2 = id; a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1= id; a*d*a^-1*d^-1 = id; b*c*b^-1*c^-1 = id; b*d*b^-1*d^-1 = id; c*d*c^-1*d^-1 = id;
+
+### MAGMA code
+
+x:=h[3]*h[8]*n[1]*n[2]*n[4]*n[6]*n[5]*n[7];
+a:=x;
+b:=n0;
+c:=h[3]*h[5]*h[7]*n[1];
+d:=h[4]*h[5]*h[7]*h[8]*n[120];
+
+a^6 eq 1; b^2 eq 1; c^2 eq 1; d^2 eq 1; 
+a*b*a^-1*b^-1 eq 1; a*c*a^-1*c^-1 eq 1; a*d*a^-1*d^-1 eq 1; 
+b*c*b^-1*c^-1 eq 1; b*d*b^-1*d^-1 eq 1; c*d*c^-1*d^-1 eq 1;
+
+##### Torus 40 #####
+
+x:=w[2]*w[3]*w[5]*w[7]*w[4]*w[8];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(4);;
+a:=F.1;; b:=F.2;; c:=F.3;; d:=F.4;;
+rel:=[a^6, b^6, c^2, d^2, (c*d)^3, a*b*a^-1*b^-1, a*c*a^-1*c^-1, a*d*a^-1*d^-1, b*c*b^-1*c^-1, b*d*b^-1*d^-1];;
+
+G:=F/rel;;
+Order(G) = Order(C);
+
+a:=x;;
+b:=w[7]*w[8]*w0;;
+c:=w[23]*w[24];;
+d:=w[105]*w[106];;
+
+a in C; b in C; c in C; d in C;
+Order(Group(a,b,c,d)) = Order(C);
+
+a^6 = id; b^6 = id; c^2 = id; d^2 = id; (c*d)^3 = id; a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id; a*d*a^-1*d^-1 = id; b*c*b^-1*c^-1 = id; b*d*b^-1*d^-1 = id;
+
+### MAGMA code
+
+x:=h[3]*n[2]*n[3]*n[5]*n[7]*n[4]*n[8];
+a:=x;
+b:=n[7]*n[8]*n0;
+c:=h[3]*h[5]*n[23]*n[24];
+d:=h[2]*h[5]*n[105]*n[106];
+
+a^6 eq 1; b^6 eq 1; c^2 eq 1; d^2 eq 1; (c*d)^3 eq 1; a*b*a^-1*b^-1  eq 1; a*c*a^-1*c^-1 eq 1; a*d*a^-1*d^-1  eq 1; b*c*b^-1*c^-1  eq 1; b*d*b^-1*d^-1 eq 1;
+
+##### Torus 43 #####
+
+x:=w[1]*w[5]*w[8]*w[2]*w[3]*w[6]*w[69];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(3);;
+a:=F.1;; b:=F.2;; c:=F.3;;
+
+rel:=[a^2, a*b*a^-1*b^-1, a*c*a^-1*c^-1, b^18, c^4, b^-1*(c^-1*b)^2*c^-1*b^-1, (b^-1*c^-1)^2*c^-1*(b*c*b^2)^3*c^-1*b^-2*c*b*c];;
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=w0;;
+b:=w[1]*w[6]*w[63]*w[4]*w[8]*w[19]*w[51];;
+c:=w[1]*w[4]*w[3]*w[32];;
+
+a in C; b in C; c in C;
+Order(Group(a,b,c)) = Order(C);
+
+a^2 = id; a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id; b^18 = id; c^4 = id; b^-1*(c^-1*b)^2*c^-1*b^-1 = id; (b^-1*c^-1)^2*c^-1*(b*c*b^2)^3*c^-1*b^-2*c*b*c = id;
+
+### MAGMA code
+
+x:=h[7]*n[1]*n[5]*n[8]*n[2]*n[3]*n[6]*n[69];
+a:=n0;
+b:=h[1]*h[4]*h[5]*h[7]*n[1]*n[6]*n[63]*n[4]*n[8]*n[19]*n[51];
+c:=h[4]*n[1]*n[4]*n[3]*n[32];
+
+x*a*x^-1*a^-1 eq 1; x*b*x^-1*b^-1 eq 1; x*c*x^-1*c^-1 eq 1;
+
+a^2 eq 1; a*b*a^-1*b^-1 eq 1; a*c*a^-1*c^-1 eq 1; b^18 eq 1; c^4 eq 1; b^-1*(c^-1*b)^2*c^-1*b^-1 eq  1; (b^-1*c^-1)^2*c^-1*(b*c*b^2)^3*c^-1*b^-2*c*b*c eq 1;
+
+##### Torus 44 #####
+
+x:=w[1]*w[5]*w[7]*w[2]*w[3]*w[6]*w[8];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(2);;
+a:=F.1;; b:=F.2;;
+
+rel:=[a^30, b^2, a*b*a^-1*b^-1];;
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x;;
+b:=w0;;
+
+a in C; b in C; 
+Order(Group(a,b)) = Order(C);
+
+a^30 = id; b^2 = id; a*b*a^-1*b^-1 = id;
+
+### MAGMA code
+
+x:=h[4]*n[1]*n[5]*n[7]*n[2]*n[3]*n[6]*n[8];
+a:=x;
+b:=n0;
+
+a^30 eq 1; b^2 eq 1; a*b*a^-1*b^-1 eq 1;
+
+##### Torus 45 #####
+
+x:=w[1]*w[4]*w[2]*w[3]*w[6]*w[8]*w[7];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(2);;
+a:=F.1;; b:=F.2;;
+
+rel:=[a^20, b^2, a*b*a^-1*b^-1];;
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x;;
+b:=w0;;
+
+a in C; b in C; 
+Order(Group(a,b)) = Order(C);
+
+a^20 = id; b^2 = id; a*b*a^-1*b^-1 = id;
+
+### MAGMA code
+
+x:=h[5]*n[1]*n[4]*n[2]*n[3]*n[6]*n[8]*n[7];
+a:=x;
+b:=n0;
+
+a^20 eq 1; b^2 eq 1; a*b*a^-1*b^-1 eq 1;
+
+##### Torus 46 #####
+
+x:=w[1]*w[4]*w[6]*w[3]*w[5]*w[7]*w[120];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(2);;
+a:=F.1;; b:=F.2;;
+
+rel:=[a^14, b^2, a*b*a^-1*b^-1];;
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x;;
+b:=w0;;
+
+a in C; b in C; 
+Order(Group(a,b)) = Order(C);
+
+a^14 = id; b^2 = id; a*b*a^-1*b^-1 = id;
+
+### MAGMA code
+
+x:=h[8]*n[1]*n[4]*n[6]*n[3]*n[5]*n[7]*n[120];
+a:=x;
+b:=n0;
+
+a^14 eq 1; b^2 eq 1; a*b*a^-1*b^-1 eq 1;
+
+##### Torus 47 #####
+
+x:=w[1]*w[3]*w[4]*w[5]*w[6]*w[7]*w[8];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(2);;
+a:=F.1;; b:=F.2;;
+
+rel:=[a^8, b^2, a*b*a^-1*b^-1];;
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x;;
+b:=w0;;
+
+a in C; b in C; 
+Order(Group(a,b)) = Order(C);
+
+a^8 = id; b^2 = id; a*b*a^-1*b^-1 = id;
+
+### MAGMA code
+
+x:=h[2]*n[1]*n[3]*n[4]*n[5]*n[6]*n[7]*n[8];
+a:=x;
+b:=n0;
+
+a^8 eq 1; b^2 eq 1; a*b*a^-1*b^-1 eq 1;
+
+
+##### Torus 50 #####
+
+x:=w[2]*w[3]*w[5]*w[4]*w[8]*w[6]*w[120];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(2);;
+a:=F.1;; b:=F.2;;
+
+rel:=[a^24, b^2, a*b*a^-1*b^-1];;
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x;;
+b:=w0;;
+
+a in C; b in C; 
+Order(Group(a,b)) = Order(C);
+
+a^24 = id; b^2 = id; a*b*a^-1*b^-1 = id;
+
+### MAGMA code
+
+x:=n[2]*n[3]*n[5]*n[4]*n[8]*n[6]*n[120];
+a:=x;
+b:=n0;
+
+a^24 eq 1; b^2 eq 1; a*b*a^-1*b^-1 eq 1;
+
+##### Torus 51 #####
+
+x:=w[26]*w[5]*w[4]*w[3]*w[2]*w[120]*w[8];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(2);;
+a:=F.1;; b:=F.2;;
+
+rel:=[a^12, b^6, a*b*a^-1*b^-1];;
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x;;
+b:=w[1]*w[2]*w[5]*w[8]*w[7]*w[44]*w[71]*w[89];;
+
+a in C; b in C; 
+Order(Group(a,b)) = Order(C);
+
+a^12 = id; b^6 = id; a*b*a^-1*b^-1 = id;
+
+### MAGMA code
+
+x:=h[1]*n[26]*n[5]*n[4]*n[3]*n[2]*n[120]*n[8];
+a:=x;
+b:=h[2]*h[5]*h[7]*n[1]*n[2]*n[5]*n[8]*n[7]*n[44]*n[71]*n[89];
+
+a^12 eq 1; b^6 eq 1; a*b*a^-1*b^-1 eq 1;
+
+##### Torus 52 #####
+
+x:=w[1]*w[4]*w[6]*w[3]*w[2]*w[5]*w[8];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(3);;
+a:=F.1;; b:=F.2;; c:=F.3;;
+
+rel:=[a^12, b^2, c^2, a*b*a^-1*b^-1, a*c*a^-1*c^-1, c*b*c^-1*b^-1];;
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x;;
+b:=w0;;
+c:=w[8];;
+
+a in C; b in C; c in C;
+Order(Group(a,b,c)) = Order(C);
+
+a^12 = id; b^2 = id; c^2 = id; a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id; c*b*c^-1*b^-1 = id;
+
+### MAGMA code
+
+x:=h[7]*n[1]*n[4]*n[6]*n[3]*n[2]*n[5]*n[8];
+a:=x;
+b:=n0;
+c:=h[2]*h[5]*h[7]*n[8];
+
+a^12 eq 1; b^2 eq 1; c^2 eq 1; a*b*a^-1*b^-1 eq 1; a*c*a^-1*c^-1 eq 1; c*b*c^-1*b^-1 eq 1;
+
+##### Torus 53 #####
+
+x:=w[1]*w[4]*w[18]*w[3]*w[2]*w[6]*w[8];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(2);;
+a:=F.1;; b:=F.2;;
+
+rel:=[a^18, b^2, a*b*a^-1*b^-1];;
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x;;
+b:=w0;;
+
+a in C; b in C; 
+Order(Group(a,b)) = Order(C);
+
+a^18 = id; b^2 = id; a*b*a^-1*b^-1 = id;
+
+### MAGMA code
+
+x:=h[7]*n[1]*n[4]*n[18]*n[3]*n[2]*n[6]*n[8];
+a:=x;
+b:=n0;
+
+a^18 eq 1; b^2 eq 1; a*b*a^-1*b^-1 eq 1;
+
+##### Torus 54 #####
+
+x:=w[1]*w[4]*w[18]*w[3]*w[2]*w[48]*w[8];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(4);;
+a:=F.1;; b:=F.2;; c:=F.3;; d:=F.4;;
+
+rel:=[a^6, b^2, a*b*a^-1*b^-1, a*c*a^-1*c^-1, a*d*a^-1*d^-1, b*c*b^-1*c^-1, b*d*b^-1*d^-1, c^4, d^3, c*d*c^-1*d*c*d, (d^-1*c)^3 ];;
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x;;
+b:=w0;;
+c:=w[3]*w[6]*w[25]*w[37];;
+d:=w[1]*w[4]*w[6]*w[17]*w[26]*w[57];;
+
+a in C; b in C; c in C; d in C;
+Order(Group(a,b,c,d)) = Order(C);
+
+a^6 = id; b^2 = id; a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id; a*d*a^-1*d^-1 = id; b*c*b^-1*c^-1 = id; b*d*b^-1*d^-1 = id; c^4 = id; d^3 = id; c*d*c^-1*d*c*d = id; (d^-1*c)^3 = id;
+
+### MAGMA code
+
+a := h[120]*n[1]*n[4]*n[18]*n[3]*n[2]*n[48]*n[8];
+b := n0;
+c := h[1]*h[2]*h[5]*n[3]*n[6]*n[25]*n[37];
+d := h[1]*h[2]*h[4]*h[6]*n[1]*n[4]*n[6]*n[17]*n[26]*n[57];
+
+a^6 eq 1; b^2 eq 1; a*b*a^-1*b^-1 eq  1; a*c*a^-1*c^-1 eq 1; a*d*a^-1*d^-1 eq 1; 
+b*c*b^-1*c^-1  eq 1; b*d*b^-1*d^-1 eq 1; c^4 eq 1; d^3 eq 1; c*d*c^-1*d*c*d eq 1; (d^-1*c)^3 eq 1;
+
+##### Torus 55 #####
+
+x:=w[2]*w[3]*w[4]*w[5]*w[6]*w[7]*w[8];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(2);;
+a:=F.1;; b:=F.2;;
+
+rel:=[a^12, b^2, a*b*a^-1*b^-1];;
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x;;
+b:=w0;;
+
+a in C; b in C; 
+Order(Group(a,b)) = Order(C);
+
+a^12 = id; b^2 = id; a*b*a^-1*b^-1 = id;
+
+### MAGMA code
+
+x := h[1]*n[2]*n[3]*n[4]*n[5]*n[6]*n[7]*n[8];
+a := x;
+b := n0;
+
+a^12 eq 1; b^2 eq 1; a*b*a^-1*b^-1 eq 1;
+
+##### Torus 56 (odd) #####
+
+x:=w[1]*w[2]*w[3]*w[5]*w[6]*w[8]*w[120]*w[69];;
+
+C:=Centralizer(W,x);;
+
+a:=x^2*w0;;
+b:=w[1]*w[4]*w[18]*w[44];;
+c:=w[1]*w[2]*w[64]*w[116]*w[26]*w[28]*w[32]*w[120];;
+
+a in C; b in C; c in C;
+Order(Group(a,b,c)) = Order(C);
+
+### MAGMA code
+
+x:=n[1]*n[2]*n[3]*n[5]*n[6]*n[8]*n[120]*n[69];
+
+a:=x^2*n0;
+b:=h[1]*h[4]*n[1]*n[4]*n[18]*n[44];
+c:=h[1]*h[3]*h[5]*h[6]*h[7]*h[8]*n[1]*n[2]*n[64]*n[116]*n[26]*n[28]*n[32]*n[120];
+
+x*a*x^-1*a^-1 eq 1; x*b*x^-1*b^-1 eq 1; x*c*x^-1*c^-1 eq 1;
+
+#### Torus 57 (odd) #####
+
+x:=w[1]*w[4]*w[2]*w[3]*w[6]*w[8]*w[7]*w[120];;
+C:=Centralizer(W,x);;
+
+a:=x;;
+b:=w[1]*w[2]*w[5]*w[44]*w[28]*w[45]*w[56]*w[114];;
+c:=w[1]*w[4]*w[6]*w[8]*w[58]*w[63]*w[96]*w[113];;
+
+a in C; b in C; c in C;
+Order(Group(a,b,c)) = Order(C);
+
+### MAGMA code
+
+x:=n[1]*n[4]*n[2]*n[3]*n[6]*n[8]*n[7]*n[120];;
+
+a:=x;
+b:=h[2]*h[3]*h[4]*h[5]*h[7]*n[1]*n[2]*n[5]*n[44]*n[28]*n[45]*n[56]*n[114];;
+c:=h[1]*h[2]*h[3]*h[4]*h[5]*h[6]*n[1]*n[4]*n[6]*n[8]*n[58]*n[63]*n[96]*n[113];;
+
+x*a*x^-1*a^-1 eq 1; x*b*x^-1*b^-1 eq 1; x*c*x^-1*c^-1 eq 1;
+
+##### Torus 58 (odd) #####
+
+x:=w[1]*w[3]*w[4]*w[5]*w[6]*w[7]*w[8]*w[120];;
+C:=Centralizer(W,x);;
+
+a:=x*w0;;
+b:=w[49]*w[67];;
+
+a in C; b in C; 
+Order(Group(a,b)) = Order(C);
+
+### MAGMA code
+
+x:=n[1]*n[3]*n[4]*n[5]*n[6]*n[7]*n[8]*n[120];
+a:=x*n0;
+b:=h[1]*h[5]*h[8]*n[49]*n[67];
+
+a*b*a^-1*b^-1 eq 1;
+
+##### Torus 60  #####
+
+x:=w[2]*w[3]*w[5]*w[7]*w[4]*w[6]*w[8]*w[114];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(3);;
+a:=F.1;; b:=F.2;; c:=F.3;;
+
+rel:=[a^12, b^2, c^2, (b*c)^3, a*b*a^-1*b^-1, a*c*a^-1*c^-1];;
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x;;
+b:=w[69]*w[70];;
+c:=w[78]*w[79];;
+
+a in C; b in C; c in C;
+Order(Group(a,b,c)) = Order(C);
+
+a^12 = id; b^2 = id; c^2 = id; (b*c)^3 = id; a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id;
+
+### MAGMA code
+
+x:=h[4]*n[2]*n[3]*n[5]*n[7]*n[4]*n[6]*n[8]*n[114];
+a:=x;
+b:=h[1]*h[3]*h[4]*h[6]*h[7]*n[69]*n[70];
+c:=h[2]*h[7]*n[78]*n[79];
+
+a^12 eq 1; b^2 eq 1; c^2 eq 1; (b*c)^3 eq 1; a*b*a^-1*b^-1 eq 1; a*c*a^-1*c^-1 eq 1;
+
+##### Torus 61 #####
+
+x:=w[4]*w[6]*w[8]*w[113]*w[3]*w[5]*w[32]*w[7];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(3);;
+a:=F.1;; b:=F.2;; c:=F.3;;
+
+rel:=[a^8, b^4, c^3 , a*b*a^-1*b^-1, a*c*a^-1*c^-1, (b*c)^4, a*c*a*b*c^-1*b*c*b^-1*a^4*b];;
+G:=F/rel;;
+
+Order(G) = Order(C);
+
+a:=x;;
+b:=w[2]*w[109]*w[10]*w[11];;
+c:=w[1]*w[2]*w[7]*w[29]*w[18]*w[44]*w[56]*w[119];;
+
+a in C; b in C; c in C;
+Order(Group(a,b,c)) = Order(C);
+
+a^8 = id; b^4 = id; c^3 = id; a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id; (b*c)^4 = id; a*c*a*b*c^-1*b*c*b^-1*a^4*b = id;
+
+### MAGMA code
+
+x:=n[4]*n[6]*n[8]*n[113]*n[3]*n[5]*n[32]*n[7]; 
+a:=x;
+b:=h[2]*n[2]*n[109]*n[10]*n[11];
+c:=h[2]*h[5]*h[8]*n[1]*n[2]*n[7]*n[29]*n[18]*n[44]*n[56]*n[119];
+
+a^8 eq 1; b^4 eq 1; c^3 eq 1; a*b*a^-1*b^-1 eq 1; a*c*a^-1*c^-1 eq 1; (b*c)^4 eq 1; a*c*a*b*c^-1*b*c*b^-1*a^4*b eq 1;
+
+##### Torus 62 #####
+
+x:=w[1]*w[2]*w[3]*w[4]*w[5]*w[6]*w[8]*w[120];;
+C:=Centralizer(W,x);;
+
+a:=x;;
+b:=w[1]*w[5]*w[20]*w[71]*w[10]*w[38]*w[44]*w[67];;
+c:=w[1]*w[5]*w[20]*w[78]*w[18]*w[33]*w[49]*w[63];;
+d:=w[8]*w[99]*w[59]*w[120];;
+
+a in C; b in C; c in C; d in C; 
+Order(Group(a,b,c,d)) = Order(C);
+
+### MAGMA code
+
+x:=n[1]*n[2]*n[3]*n[4]*n[5]*n[6]*n[8]*n[120];
+a:=x;
+b:=h[4]*h[5]*h[6]*h[8]*n[1]*n[5]*n[20]*n[71]*n[10]*n[38]*n[44]*n[67];
+c:=h[1]*h[2]*h[3]*h[5]*h[6]*h[8]*n[1]*n[5]*n[20]*n[78]*n[18]*n[33]*n[49]*n[63];
+d:=h[1]*h[2]*h[3]*h[6]*h[7]*h[8]*n[8]*n[99]*n[59]*n[120];
+
+x*a*x^-1*a^-1 eq 1; x*b*x^-1*b^-1 eq 1; x*c*x^-1*c^-1 eq 1; x*d*x^-1*d^-1 eq 1; 
+
+
+##### Torus 63 #####
+
+x:=w[1]*w[4]*w[6]*w[8]*w[3]*w[32]*w[5]*w[120];;
+C:=Centralizer(W,x);;
+
+a:=x^2;;
+b:=w[2]*w[32]*w[10]*w[63];;
+c:=w[4]*w[2];;
+d:=w[8]*w[104]*w[58]*w[120];;
+e:=w[61]*w[67];
+
+a in C; b in C; c in C; d in C; e in C;
+Order(Group(a,b,c,d,e)) = Order(C);
+
+### MAGMA code
+
+x:=n[1]*n[4]*n[6]*n[8]*n[3]*n[32]*n[5]*n[120];;
+a:=x^2;
+b:=h[3]*h[5]*n[2]*n[32]*n[10]*n[63];
+c:=h[2]*h[4]*n[4]*n[2];;
+d:=h[1]*h[2]*h[5]*h[6]*h[7]*h[8]*n[8]*n[104]*n[58]*n[120];
+e:=n[61]*n[67];
+
+x*a*x^-1*a^-1 eq 1; x*b*x^-1*b^-1 eq 1; x*c*x^-1*c^-1 eq 1; x*d*x^-1*d^-1 eq 1; x*e*x^-1*e^-1 eq 1; 
+
+##### Torus 64 #####
+
+x:=w[1]*w[2]*w[3]*w[4]*w[5]*w[6]*w[7]*w[8];;
+C:=Centralizer(W,x);;
+
+Order(Group(x)) = Order(C);
+
+##### Torus 65 #####
+
+x:=w[1]*w[4]*w[6]*w[8]*w[32]*w[5]*w[7]*w[120];;
+C:=Centralizer(W,x);;
+
+Order(Group(x)) = Order(C);
+
+##### Torus 66 #####
+
+x:=w[1]*w[4]*w[6]*w[8]*w[32]*w[2]*w[5]*w[7];;
+C:=Centralizer(W,x);;
+
+Order(Group(x)) = Order(C);
+
+##### Torus 67 #####
+
+x:=w[2]*w[32]*w[5]*w[7]*w[1]*w[4]*w[6]*w[65];;
+C:=Centralizer(W,x);;
+
+a:=x;;
+b:=w[18]*w[45]*w[92]*w[112];;
+c:=w[2]*w[29]*w[4]*w[17];;
+
+a in C; b in C; c in C;
+Order(Group(a,b,c)) = Order(C);
+
+### MAGMA code
+
+x:=n[2]*n[32]*n[5]*n[7]*n[1]*n[4]*n[6]*n[65];
+
+a:=x;
+b:=h[3]*h[5]*h[6]*n[18]*n[45]*n[92]*n[112];
+c:=h[2]*h[3]*h[4]*n[2]*n[29]*n[4]*n[17]; 
+
+x*a*x^-1*a^-1 eq 1; x*b*x^-1*b^-1 eq 1; x*c*x^-1*c^-1 eq 1;
+
+
+#####################################################################################
+#####  Non-splitting tori for E8
+#####  here we verify that in non-splitting cases there exists an element y which is conjugate to w in W
+#####  and that commutes with w[2]*w[5], w[61] and w[97].
+#####  Then we verify in MAGMA a preimage x1 of y commutes with n[2]*n[5], n[61] and n[97].
+#####  Finally, we verify a preimage x2 of y such that |x|=|y|.
+#####
+### Torus 1 
+
+x:=Identity(W);;
+y:=x;;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### Torus 2
+
+x:=w[1];;
+y:=w[2];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA code
+
+x:=n[2];
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+(h[4]*x)^2 eq 1;
+
+### Tours 3
+
+x:=w[1]*w[2];;
+y:=w[2]*w[5];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA code
+
+x:=n[2]*n[5];
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+(h[4]*x)^2 eq 1;
+
+### Torus 4
+
+x:=w[3]*w[1];;
+y:=w[3]*w[99];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA code
+
+x:=n[3]*n[99];
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+x^3 eq 1;
+
+### Torus 5
+
+x:=w[2]*w[3]*w[5];;
+y:=w[3]*w[5]*w[2];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA code
+
+x:=n[3]*n[5]*n[2];
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+(h[4]*x)^2 eq 1;
+
+### Torus 6
+
+x:=w[1]*w[3]*w[5];;
+y:=w[61]*w[99]*w[3];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA code
+
+x:=n[61]*n[99]*n[3];
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+(h[6]*x)^6 eq 1;
+
+### Torus 7
+
+x:=w[1]*w[3]*w[4];;
+y:=w[2]*w[4]*w[18];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA code
+
+x:=h[4]*n[2]*n[4]*n[18];
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+(h[4]*h[6]*x)^4 eq 1;
+
+### Torus 8
+
+x:=w[1]*w[4]*w[6]*w[69];;
+y:=w[2]*w[5]*w[61]*w[97];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA code
+
+x:=n[2]*n[5]*n[61]*n[97];;
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+x^2 eq 1;
+
+### Torus 9
+
+x:=w[1]*w[2]*w[3]*w[5];;
+y:=w[2]*w[5]*w[3]*w[99];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA Code
+
+x:=n[2]*n[5]*n[3]*n[99];
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+(h[4]*x)^6 eq 1;
+
+### Torus 11
+
+x:=w[1]*w[4]*w[6]*w[3];;
+y:=w[2]*w[97]*w[4]*w[18];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA Code
+
+x:=h[4]*n[2]*n[97]*n[4]*n[18];
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+(h[4]*h[6]*x)^4 eq 1;
+
+### Torus 13
+
+x:=w[3]*w[2]*w[5]*w[4];;
+y:=w[3]*w[99]*w[88]*w[95];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA Code
+
+x:=n[3]*n[99]*n[88]*n[95];
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+x^6 eq 1;
+
+### Torus 14
+
+x:=w[3]*w[2]*w[4]*w[18];;
+y:=w[3]*w[2]*w[4]*w[18];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA Code
+
+x:=h[4]*n[3]*n[2]*n[4]*n[18];
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+(h[4]*x)^4 eq 1;
+
+### Torus 16
+
+x:=w[1]*w[4]*w[6]*w[3]*w[69];;
+y:=w[2]*w[3]*w[61]*w[98]*w[99];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA code
+
+x:=n[2]*n[3]*n[61]*n[98]*n[99];
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+(h[4]*x)^4 eq 1;
+
+### Torus 19
+
+x:=w[2]*w[5]*w[3]*w[4]*w[6];;
+y:=w[3]*w[7]*w[4]*w[18]*w[98];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA code
+
+x:=h[4]*n[3]*n[7]*n[4]*n[18]*n[98];
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+x^8 eq 1;
+
+### Torus 20
+
+x:=w[26]*w[5]*w[4]*w[3]*w[2];;
+y:=w[2]*w[3]*w[4]*w[18]*w[102];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA code
+
+x:=h[4]*n[2]*n[3]*n[4]*n[18]*n[102];
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+(h[4]*h[6]*x)^12 eq 1;
+
+### Torus 26
+
+x:=w[1]*w[4]*w[6]*w[3]*w[7];;
+y:=w[2]*w[7]*w[4]*w[18]*w[102];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA code
+
+x:=h[4]*n[2]*n[7]*n[4]*n[18]*n[102];
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+(h[4]*h[6]*x)^12 eq 1;
+
+### Torus 28
+
+x:=w[3]*w[2]*w[4]*w[18]*w[7];
+y:=x;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA code
+
+x:=h[4]*n[3]*n[2]*n[4]*n[18]*n[7];
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+(h[4]*x)^4 eq 1;
+
+### Torus 30
+
+x:=w[46]*w[3]*w[5]*w[1]*w[4]*w[6];;
+y:=w[2]*w[3]*w[120]*w[86]*w[87]*w[99];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA code
+
+x:=h[4]*n[2]*n[3]*n[120]*n[86]*n[87]*n[99];
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+(h[4]*x)^8 eq 1;
+
+### Torus 31
+
+x:=w[2]*w[3]*w[5]*w[7];;
+y:=w[2]*w[5]*w[61]*w[98];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA code
+
+x:=n[2]*n[5]*n[61]*n[98];;
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+(h[4]*h[8]*x)^2 eq 1;
+
+### Torus 32
+
+x:=w[74]*w[3]*w[2]*w[5]*w[4];;
+y:=w[3]*w[61]*w[4]*w[18]*w[98];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA code
+
+x:=h[4]*n[3]*n[61]*n[4]*n[18]*n[98];
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+(h[4]*h[1]*h[2]*x)^6 eq 1;
+
+### Torus 33
+
+x:=w[8]*w[1]*w[4]*w[6]*w[3];;
+y:=w[3]*w[7]*w[5]*w[61]*w[99];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA code
+
+x:=n[3]*n[7]*n[5]*n[61]*n[99];
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+(h[4]*x)^4 eq 1;
+
+### Torus 35
+
+x:=w[1]*w[2]*w[3]*w[6]*w[8]*w[7];;
+y:=w[2]*w[7]*w[61]*w[4]*w[18]*w[98];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA code
+
+x:=h[4]*n[2]*n[7]*n[61]*n[4]*n[18]*n[98];;
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+(h[4]*h[6]*x)^12 eq 1;
+
+### Torus 37
+
+x:=w[4]*w[8]*w[2]*w[5]*w[7]*w[120];;
+y:=w[2]*w[3]*w[7]*w[4]*w[18]*w[61];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA code
+
+x:=h[4]*n[2]*n[3]*n[7]*n[4]*n[18]*n[61];
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+(h[4]*x)^4 eq 1;
+
+### Torus 42
+
+x:=w[2]*w[3]*w[4]*w[5]*w[6]*w[8];;
+y:=w[3]*w[7]*w[61]*w[4]*w[18]*w[98];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA code
+
+x:=h[4]*n[3]*n[7]*n[61]*n[4]*n[18]*n[98];
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+(h[4]*x)^8 eq 1;
+
+### Torus 48
+
+x:=w[2]*w[4]*w[5]*w[6]*w[7]*w[8]*w[120];;
+y:=w[2]*w[3]*w[7]*w[4]*w[18]*w[61]*w[98];;
+C:=Centralizer(W, y);;
+
+IsConjugate(W, x, y);
+w[2]*w[5] in C;
+w[61] in C;
+w[97] in C;
+
+### MAGMA code
+
+x:=h[4]*n[2]*n[3]*n[7]*n[4]*n[18]*n[61]*n[98];
+n[2]*n[5]*x*(n[2]*n[5])^-1*x^-1 eq 1;
+n[61]*x*(n[61])^-1*x^-1 eq 1;
+n[97]*x*(n[97])^-1*x^-1 eq 1;
+(h[4]*x)^8 eq 1;
+
+####################################################################
+##### here we consider 4 remaing non-splitting cases
+##### and verify in GAP generators and defining relations for C_W(w)
+#####
+
+### Torus 36
+
+x:=w[1]*w[4]*w[3]*w[7]*w[6]*w[8];;
+C:=Centralizer(W,x);;
+
+a:=w[1]*w[4]*w[3];;
+b:=w[7]*w[6]*w[8];;
+c:=w0;;
+d:=w[6]*w[8]*w[69]*w[91];;
+e:=w[20]*w[24]*w[29]*w[35];;
+
+a in C; b in C; c in C; d in C; e in C;
+Order(Group(a,b,c,d,e)) = Order(C);
+
+a^4 = id; b^4 = id; c^2 = id; d^2 = id;
+a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id; a*d*a^-1*d^-1 = id;;
+b*c*b^-1*c^-1 = id; b*d*b^-1*d^-1 = id; c*d*c^-1*d^-1 = id;
+
+### Torus 41
+
+x:=w[2]*w[3]*w[4]*w[8]*w[120]*w[18];;
+C:=Centralizer(W,x);;
+
+a:=x^2*w0;;
+i:=w[6]*w[19]*w[26];;
+j:=w[4]*w[13]*w[40];;
+k:=w[1]*w[2]*w[4]*w[6]*w[48]*w[51];;
+
+a in C; i in C; j in C; k in C;
+Order(Group(a,i,j,k)) = Order(C);
+
+i^4 = id; j^4 = id; k^3 = id; i*j*i^-1*j^-1 = id; k*i^3*j^2*k*j^3 = id;
+
+### Torus 49
+
+x:=w[2]*w[3]*w[4]*w[7]*w[120]*w[8]*w[18];;
+C:=Centralizer(W,x);;
+
+a:=w[11]*w[12];
+b:=w[4]*w[17];
+c:=w[76]*w[86];
+a in C; b in C; c in C;
+
+Order(Group(x,w0,a,b,c)) = Order(C);
+
+w[15]*w[119]*w[8] in C;
+
+
+### Torus 59
+
+x:=w[2]*w[3]*w[4]*w[7]*w[120]*w[18]*w[8]*w[74];;
+C:=Centralizer(W,x);;
+
+F:=FreeGroup(5);; a:=F.1;; b:=F.2;; c:=F.3;; d:=F.4;; e:=F.5;;
+rel:=[a^2,b^2,c^2,d^2,e^2, (a*b)^2, (a*c)^3, (a*d)^3, (a*e)^4, (b*c)^4, (b*d)^3, (b*e)^2, (c*d)^2, (c*e)^3, (d*e)^2, a*c*e*a*e*c*b*a*c*b ];
+G:=F/rel;
+Order(G) = Order(C);
+
+a:=w[1]*w[99];;
+b:=w[2]*w[5];;
+c:=w[4]*w[17];;
+d:=w[6]*w[35];;
+e:=w[9]*w[79];;
+
+a in C; b in C; c in C; d in C; e in C;
+Order(Group(a,b,c,d,e)) = Order(C);
+
+a^2 = id; b^2 = id; c^2 = id; d^2 = id; e^2 = id; (a*b)^2 = id; (a*c)^3 = id; (a*d)^3 = id; (a*e)^4 = id; (b*c)^4 = id; 
+(b*d)^3 = id; (b*e)^2 = id; (c*d)^2 = id; (c*e)^3 = id; (d*e)^2 = id; a*c*e*a*e*c*b*a*c*b = id;
+
