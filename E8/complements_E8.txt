@@ -1213,6 +1213,7 @@ x*a*x^-1*a^-1 eq 1; x*b*x^-1*b^-1 eq 1; x*c*x^-1*c^-1 eq 1;
 #####  Then we verify in MAGMA a preimage x1 of y commutes with n[2]*n[5], n[61] and n[97].
 #####  Finally, we verify a preimage x2 of y such that |x|=|y|.
 #####
+
 ### Torus 1 
 
 x:=Identity(W);;
