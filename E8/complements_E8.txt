@@ -1,7 +1,7 @@
 ##########################################
-#### Splitting maximal tori of E8(q) #####
-#### File contains calculations that verify complements for maximal tori of E8(q) in their algebraic normalizers
-#### each case is divided into two parts. The first part contains commands for GAP. We verify generators and relations
+#### Splitting normalizers of maximal tori of E8(q) #####
+#### File contains calculations that verify complements for maximal tori of E8(q) in their algebraic normalizers.
+#### Each case is divided into two parts. The first part contains commands for GAP. We verify generators and relations
 #### for C_W(w).
 #### The second part devotes to computations in MAGMA. We verify that specific preimages of generators of C_W(w) satisfy
 #### the set of defining relations of C_W(w)
@@ -25,9 +25,11 @@ w[2]*w[3]*w[4]*w[5]*w[6]*w[7]*w[8], w[1]*w[2]*w[3]*w[5]*w[6]*w[8]*w[120]*w[69], 
 w[2]*w[3]*w[5]*w[7]*w[4]*w[6]*w[8]*w[114], w[4]*w[6]*w[8]*w[113]*w[3]*w[5]*w[32]*w[7], w[1]*w[2]*w[3]*w[4]*w[5]*w[6]*w[8]*w[120], w[1]*w[4]*w[6]*w[8]*w[3]*w[32]*w[5]*w[120], w[1]*w[2]*w[3]*w[4]*w[5]*w[6]*w[7]*w[8],
 w[1]*w[4]*w[6]*w[8]*w[32]*w[5]*w[7]*w[120], w[1]*w[4]*w[6]*w[8]*w[32]*w[2]*w[5]*w[7], w[2]*w[32]*w[5]*w[7]*w[1]*w[4]*w[6]*w[65] ];
 
+### central involutions in W
 
 w0:=w[1]*w[2]*w[5]*w[7]*w[44]*w[71]*w[89]*w[120]; ### GAP
 
+### a preimage of w0 which commuts with all ni
 
 n0:=h[2]*h[5]*h[7]*n[1]*n[2]*n[5]*n[7]*n[44]*n[71]*n[89]*n[120]; ### MAGMA
 
@@ -1207,8 +1209,8 @@ x*a*x^-1*a^-1 eq 1; x*b*x^-1*b^-1 eq 1; x*c*x^-1*c^-1 eq 1;
 
 
 #####################################################################################
-#####  Non-splitting tori for E8
-#####  here we verify that in non-splitting cases there exists an element y which is conjugate to w in W
+#####  Non-splitting normalizers of maximal tori for type E8.
+#####  Here we verify that in non-splitting cases there exists an element y which is conjugate to w in W
 #####  and that commutes with w[2]*w[5], w[61] and w[97].
 #####  Then we verify in MAGMA a preimage x1 of y commutes with n[2]*n[5], n[61] and n[97].
 #####  Finally, we verify a preimage x2 of y such that |x|=|y|.
