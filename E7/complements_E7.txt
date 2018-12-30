@@ -1,5 +1,5 @@
 ###################################################
-#### Splitting maximal tori of E7(q) (adjont) #####
+#### Splitting normalizers of maximal tori of E7(q) (adjont) #####
 #### File contains calculations that verify complements for maximal tori of E7(q) in their algebraic normalizers
 #### each case is divided into two parts. The first part contains commands for GAP. We verify generators and relations
 #### for C_W(w).
@@ -22,7 +22,7 @@ w[1]*w[4]*w[6]*w[3]*w[7], w[1]*w[4]*w[6]*w[2]*w[3]*w[7], w[3]*w[2]*w[4]*w[16]*w[
 
 id:= w[1]^2;
 
-#### central involutions of W(E7)
+#### central involution of W(E7)
 
 w0:=w[1]*w[2]*w[5]*w[7]*w[37]*w[55]*w[61];
 
@@ -182,7 +182,7 @@ Order(Group(a,b,c)) = Order(C);
 
 a^6 = id; b^2 = id; c^2 = id; a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id; b*c*b^-1*c^-1 = id;
 
-## MAGMA code
+### MAGMA code
 
 x:=h[2]*n[1]*n[4]*n[6]*n[3]*n[5];
 a:=x;
@@ -397,12 +397,11 @@ x*a*x^-1*a^-1 eq 1;
 a^14 eq 1;
 
 #####################################################################################
-#####  Non-splitting tori for E7
-#####  here we verify that in non-splitting cases there exists an element y which is conjugate to w in W
+#####  Non-splitting normalizers of maximal tori for type E7.
+#####  Here we verify that in non-splitting cases there exists an element y which is conjugate to w in W
 #####  and that commutes with w[2]*w[5], w[49] and w[63]. 
 #####  Then we verify in MAGMA that a preimage x1 of y commutes with n[2]*n[5], n[61] and n[97].
 #####  Finally, we verify a preimage x2 of y such that |x|=|y|.
-
 
 ### Torus 1 
 
