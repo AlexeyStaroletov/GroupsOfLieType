@@ -1,0 +1,927 @@
+#### supplements and complements for maximal tori, type F_4 
+
+#### reflections and the Weyl group in GAP
+
+w1:=[[-1, 1, 0, 0], [ 0, 1, 0, 0], [ 0, 0, 1, 0], [ 0, 0, 0, 1]];;
+w2:=[[ 1, 0, 0, 0], [ 1,-1, 1, 0], [ 0, 0, 1, 0], [ 0, 0, 0, 1]];;
+w3:=[[ 1, 0, 0, 0], [ 0, 1, 0, 0], [ 0, 2,-1, 1], [ 0, 0, 0, 1]];;
+w4:=[[ 1, 0, 0, 0], [ 0, 1, 0, 0], [ 0, 0, 1, 0], [ 0, 0, 1,-1]];;
+w5:=[[ 0,-1, 1, 0], [-1, 0, 1, 0], [ 0, 0, 1, 0], [ 0, 0, 0, 1]];;
+w6:=[[ 1, 0, 0, 0], [ 2,-1, 0, 1], [ 2,-2, 1, 1], [ 0, 0, 0, 1]];;
+w7:=[[ 1, 0, 0, 0], [ 0, 1, 0, 0], [ 0, 2, 0,-1], [ 0, 2,-1, 0]];;
+w8:=[[-1, 0, 0, 1], [-2, 1, 0, 1], [-2, 0, 1, 1], [ 0, 0, 0, 1]];;
+w9:=[[ 1, 0, 0, 0], [ 1, 1,-1, 1], [ 2, 0,-1, 2], [ 0, 0, 0, 1]];;
+w10:=[[ 1, 0, 0, 0], [ 2,-1, 1,-1], [ 2,-2, 2,-1], [ 2,-2, 1, 0]];;
+w11:=[[ 0, 1,-1, 1], [-1, 2,-1, 1], [-2, 2,-1, 2], [ 0, 0, 0, 1]];;
+w12:=[[-1, 0, 1,-1], [-2, 1, 1,-1], [-2, 0, 2,-1], [-2, 0, 1, 0]];;
+w13:=[[ 1, 0, 0, 0], [ 2, 1,-1, 0], [ 4, 0,-1, 0], [ 2, 0,-1, 1]];;
+w14:=[[ 1,-1, 0, 1], [ 0,-1, 0, 2], [ 0,-2, 1, 2], [ 0, 0, 0, 1]];;
+w15:=[[-1, 2,-1, 0], [-2, 3,-1, 0], [-4, 4,-1, 0], [-2, 2,-1, 1]];;
+w16:=[[ 1, 0, 0, 0], [ 1, 1, 0,-1], [ 2, 0, 1,-2], [ 2, 0, 0,-1]];;
+w17:=[[ 1,-2, 1, 0], [ 0,-3, 2, 0], [ 0,-4, 3, 0], [ 0,-2, 1, 1]];;
+w18:=[[ 0, 1, 0,-1], [-1, 2, 0,-1], [-2, 2, 1,-2], [-2, 2, 0,-1]];;
+w19:=[[ 1, 0,-1, 1], [ 0, 1,-2, 2], [ 0, 0,-2, 3], [ 0, 0,-1, 2]];;
+w20:=[[ 1,-1, 1,-1], [ 0,-1, 2,-2], [ 0,-2, 3,-2], [ 0,-2, 2,-1]];;
+w21:=[[ 1, 0, 0,-1], [ 0, 1, 0,-2], [ 0, 0, 1,-3], [ 0, 0, 0,-1]];;
+w22:=[[ 1, 1,-1, 0], [ 0, 3,-2, 0], [ 0, 4,-3, 0], [ 0, 2,-2, 1]];;
+w23:=[[ 2,-1, 0, 0], [ 3,-2, 0, 0], [ 4,-4, 1, 0], [ 2,-2, 0, 1]];;
+w24:=[[-1, 0, 0, 0], [-3, 1, 0, 0], [-4, 0, 1, 0], [-2, 0, 0, 1]];;
+
+w:=[w1,w2,w3,w4,w5,w6,w7,w8,w9,w10,w11,w12,w13,w14,w15,w16,w17,w18,w19,w20,w21,w22,w23,w24];
+Sw:=w;
+W:=Group(w1,w2,w3,w4);
+w0:=w1*w3*w14*w21;
+
+iso:=IsomorphismPermGroup(W);
+V:=Image(iso, W);
+v:=[];
+for i in w do
+Add(v, i^iso);
+od;
+
+v0:=w0^iso;
+id:=w[1]^2;
+
+###############################################################################
+
+##### Preparatory commands in MAGMA (calculator) to perform calculations
+
+L:=LieAlgebra("F4", Rationals());
+R:=RootDatum(L);
+G:=GroupOfLieType(L);
+X, Y, H:= ChevalleyBasis(L); 
+// print out extra special pairs of roots and signs
+IsChevalleyBasis(L, R, X, Y, H);
+n:=[ elt<G|i> : i in [1..24]];
+h:=[TorusTerm(G, i,-1) : i in [1..24]];
+w:=[Transpose(i) : i in ReflectionMatrices(R)];
+
+id:=w[1]*w[1];
+n0:=h[4]*n[1]*n[3]*n[14]*n[21];
+
+###############################################################################
+
+#### Tori 1 and 17 (w=id or w=w0), minimal supplement of order 4*|C|
+
+#### verify that h3^n4 = h3*h4 (MAGMA)
+
+n[4]*h[3]*n[4]^-1 eq h[3]*h[4];
+
+#### verify that C_W(w) is isomorphic to 
+#### <a,b,c,d | a^2, b^2, c^2, d^2, (ab)^3, [a,c], [a,d], (bc)^4, [b,d], (cd)^3> = W(F4) (GAP)
+
+x:=id;
+C:=Centralizer(W, x);
+
+F:=FreeGroup(4);
+a:=F.1;; b:=F.2;; c:=F.3;; d:=F.4;; 
+rel:=[a^2, b^2, c^2, d^2, (a*b)^3, a*c*a^-1*c^-1,  a*d*a^-1*d^-1, (b*c)^4, b*d*b^-1*d^-1, (c*d)^3];;
+G:=F/rel;
+Order(G) = Order(C);
+
+#### verify that w1, w2, w3, and w4 generate C_W(w) and satisfy this set of relations (GAP)
+
+a:=w1;;
+b:=w2;;
+c:=w3;;
+d:=w4;;
+
+a in C; b in C; c in C; d in C; 
+Order(Group(a,b,c,d)) = Order(C);
+a^2 = id; b^2 = id; c^2 = id; d^2 = id; 
+(a*b)^3 = id; a*c*a^-1*c^-1 = id; a*d*a^-1*d^-1 = id; (b*c)^4 = id; b*d*b^-1*d^-1 = id; (c*d)^3 = id;
+
+#### verify that h2*n1, h1*n2, h4*n3, and h3*n4 generate a supplement of order 4*|C_W(w)| (MAGMA)
+
+a:=h[2]*n[1];
+b:=h[1]*n[2];
+c:=h[4]*n[3];
+d:=h[3]*n[4];
+
+a^2 eq 1; b^2 eq 1; c^2 eq 1; d^2 eq 1; 
+(a*b)^3 eq 1; a*c*a^-1*c^-1 eq h[3]; a*d*a^-1*d^-1 eq 1; (b*c)^4 eq h[3]; b*d*b^-1*d^-1 eq 1; (c*d)^3 eq 1;
+
+// verify that the group <h3, h4> is normal in <a, b, c, d> (MAGMA):
+
+a*h[3]*a^-1 eq h[3];
+b*h[3]*b^-1 eq h[3];
+c*h[3]*c^-1 eq h[3];
+d*h[3]*d^-1 eq h[3]*h[4];
+a*h[4]*a^-1 eq h[4];
+b*h[4]*b^-1 eq h[4];
+c*h[4]*c^-1 eq h[3]*h[4];
+d*h[4]*d^-1 eq h[4];
+
+###############################################################################
+
+#### Tori 2 and 9 (w=w2 or w=w2*w0), minimal supplement of order 4*|C| or 8*|C|
+
+#### verify that C_W(w) is isomorphic to Z_2 x Z_2 x S_4 (GAP)
+
+x:=w2;
+C:=Centralizer(W, x);
+
+F:=FreeGroup(5);
+a:=F.1;; b:=F.2;; c:=F.3;; d:=F.4;; e:=F.5;;
+rel:=[a^2, b^2, c^2, d^2, e^2, a*b*a^-1*b^-1, a*c*a^-1*c^-1, a*d*a^-1*d^-1, 
+a*e*a^-1*e^-1, b*c*b^-1*c^-1, b*d*b^-1*d^-1, b*e*b^-1*e^-1, c*e*c^-1*e^-1, (c*d)^3, (d*e)^3 ];;
+G:=F/rel;
+Order(G) = Order(C);
+
+#### verify that w2, w0, w4, w8, and w13 generate C_W(w) and satisfy this set of relations (GAP)
+
+a:=w2;;
+b:=w0;;
+c:=w4;;
+d:=w8;;
+e:=w13;;
+
+a in C; b in C; c in C; d in C; e in C;
+Order(Group(a,b,c,d,e)) = Order(C);
+a^2 = id; b^2 = id; c^2 = id; d^2 = id; e^2 = id; 
+a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id; a*d*a^-1*d^-1 = id; a*e*a^-1*e^-1 = id;
+b*c*b^-1*c^-1 = id; b*d*b^-1*d^-1 = id; b*e*b^-1*e^-1 = id; 
+c*e*c^-1*e^-1 = id; (c*d)^3 = id; (d*e)^3 = id;  
+
+#### verify that (w21*w8*w3*w2)^w7 lies in C_W(w) (GAP)
+
+(w21*w8*w3*w2)^w7 in C;
+
+#### verify that h3^n7 = h4 (MAGMA)
+
+n[7]*h[3]*n[7]^-1 eq h[4];
+
+// verify that h4^n8 = h3*h4 (MAGMA)
+
+n[8]*h[4]*n[8]^-1 eq h[3]*h[4];
+
+// verify that [n,n4]=[n,n8]=[n,n13]=1  (MAGMA)
+
+x:=n[2];
+x*n[4]*x^-1*n[4]^-1 eq 1;
+x*n[8]*x^-1*n[8]^-1 eq 1;
+x*n[13]*x^-1*n[13]^-1 eq 1;
+
+// verify that n2, n0, n4, n8, and n13 normalize the group <h3, h4> (MAGMA)
+
+n[2]*h[3]*n[2]^-1 eq h[3];
+n0*h[3]*n0^-1 eq h[3];
+n[8]*h[3]*n[8]^-1 eq h[3];
+n[4]*h[3]*n[4]^-1 eq h[3]*h[4];
+n[13]*h[3]*n[13]^-1 eq h[3]*h[4];
+
+n[8]*h[4]*n[8]^-1 eq h[3]*h[4];
+n[2]*h[4]*n[2]^-1 eq h[4];
+n0*h[4]*n0^-1 eq h[4];
+n[4]*h[4]*n[4]^-1 eq h[4];
+n[13]*h[4]*n[13]^-1 eq h[4];
+
+// verify that <n4,n8,n13>/<h3,h4> is a homomorphic image of S4 (MAGMA)
+
+n[4]^2 eq h[4];
+n[13]^2 eq h[4];
+(n[4]*n[13])^2 eq h[4];
+n[8]^2 eq h[3];
+(n[4]*n[8])^3 eq 1;
+(n[8]*n[13])^3 eq 1;
+
+// verify lifts for n2 and n0*n2 (MAGMA)
+
+(h[1]*n[2])^2 eq 1;
+(h[1]*n0*n[2])^2 eq 1;
+
+###############################################################################
+
+#### Tori 3 and  10 (w=w3 or w=w0*w3), minimal supplement of order 2*|C|
+
+#### verify that C_W(w) is isomorphic to Z_2 x Z_2 x S_4 (GAP)
+
+x:=w3;
+C:=Centralizer(W, x);
+
+F:=FreeGroup(5);
+a:=F.1;; b:=F.2;; c:=F.3;; d:=F.4;; e:=F.5;;
+rel:=[a^2, b^2, c^2, d^2, e^2, a*b*a^-1*b^-1, a*c*a^-1*c^-1, a*d*a^-1*d^-1, a*e*a^-1*e^-1, 
+b*c*b^-1*c^-1, b*d*b^-1*d^-1, b*e*b^-1*e^-1, c*e*c^-1*e^-1, (c*d)^3, (d*e)^3 ];;
+G:=F/rel;
+Order(G) = Order(C);
+
+#### verify that w3, w14*w21*w1, w1, w16, and w14 generate C_W(w) and satisfy this set of relations (GAP)
+
+a:=w3;
+b:=w14*w21*w1;
+c:=w1;
+d:=w16;
+e:=w14;
+
+a in C; b in C; c in C; d in C; e in C;
+Order(Group(a,b,c,d,e)) = Order(C);
+a^2 = id; b^2 = id; c^2 = id; d^2 = id; e^2 = id; 
+a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id; a*d*a^-1*d^-1 = id; a*e*a^-1*e^-1 = id;
+b*c*b^-1*c^-1 = id; b*d*b^-1*d^-1 = id; b*e*b^-1*e^-1 = id; 
+c*e*c^-1*e^-1 = id; (c*d)^3 = id; (d*e)^3 = id;  
+
+#### verify that (w21*w8*w3*w2)^w5 lies in C_W(w)  (GAP)
+
+(w21*w8*w3*w2)^w5 in C;
+
+#### verify that h3^n5 = h3 (MAGMA)
+
+n[5]*h[3]*n[5]^-1 eq h[3];
+
+#### verify that <h3> is a normal subgroup in <n3, h4*n14*n21*n1, h2*h4*n1, h1*n16, h2*h4*n14> (MAGMA)
+
+a:=n[3]; 
+b:=h[4]*n[14]*n[21]*n[1]; 
+c:=h[2]*h[4]*n[1]; 
+d:=h[1]*n[16];
+e:=h[2]*h[4]*n[14];
+
+a*h[3]*a^-1 eq h[3];
+b*h[3]*b^-1 eq h[3];
+c*h[3]*c^-1 eq h[3];
+d*h[3]*d^-1 eq h[3];
+e*h[3]*e^-1 eq h[3];
+
+// verify that a, b, c, d, e generate a suplement M such that M/<h3>=C_W(w) (MAGMA)
+                                                                                                                  
+a^2 eq h[3]; b^2 eq h[3]; c^2 eq 1; d^2 eq 1; e^2 eq 1;
+a*b*a^-1*b^-1 eq 1; a*c*a^-1*c^-1 eq 1; a*d*a^-1*d^-1 eq 1; a*e*a^-1*e^-1 eq 1;
+b*c*b^-1*c^-1 eq 1; b*d*b^-1*d^-1 eq 1; b*e*b^-1*e^-1 eq 1; 
+c*e*c^-1*e^-1 eq h[3];
+(c*d)^3 eq h[3]; (d*e)^3 eq 1; 
+
+// verify lifts for w3 and w0*w3 (MAGMA)
+
+(h[2]*n[3])^2 eq 1;
+(h[2]*n0*n[3])^2 eq 1;
+
+###############################################################################
+
+#### Torus 4 (w=w6*w3), minimal supplement of order 4*|C|
+
+#### verify that w and w0*w are conjugate in W (GAP)
+
+x:=w6*w3;
+IsConjugate(W, x, w0*x);
+
+#### verify that C_W(w) is isomorphic to D8 x D8 (GAP)
+
+C:=Centralizer(W, x);
+F:=FreeGroup(4);
+a:=F.1;; b:=F.2;; c:=F.3;; d:=F.4;; 
+rel:=[a^2, b^2, c^2, d^2, (a*b)^4, (c*d)^4, a*c*a^-1*c^-1,  a*d*a^-1*d^-1, b*c*b^-1*c^-1, b*d*b^-1*d^-1];;
+G:=F/rel;
+Order(G) = Order(C);
+
+#### verify that w2, w3, w21, and w24 generate C_W(w) and satisfy this set of relations (GAP)
+
+a:=w2;
+b:=w3;
+c:=w21;
+d:=w24;
+
+a in C; b in C; c in C; d in C; 
+Order(Group(a,b,c,d)) = Order(C);
+a^2 = id; b^2 = id; c^2 = id; d^2 = id; 
+(a*b)^4 = id; (c*d)^4 = id;
+a*c*a^-1*c^-1 = id; a*d*a^-1*d^-1 = id; b*c*b^-1*c^-1 = id; b*d*b^-1*d^-1 = id;
+
+#### verify that w21*w8*w3*w2 in C_W(w) (GAP)
+
+w21*w8*w3*w2 in C;
+
+#### verify that [n,n2]=[n,h1*n3]=[n,n24]=1, where n = n6*n3 (MAGMA)
+
+x:=n[6]*n[3];
+x*n[2]*x^-1*n[2]^-1 eq 1;
+x*h[1]*n[3]*x^-1*(h[1]*n[3])^-1 eq 1;
+x*n[24]*x^-1*n[24]^-1 eq 1;
+
+// verify that n24^2=h2*h4 and (h1*n3)^2=h3 (MAGMA)
+
+n[24]^2 eq h[2]*h[4];
+(h[1]*n[3])^2 eq h[3];
+
+// verify that <h3, h2*h4> is a normal subgroup in <n2, h1*n3, n21, n24> (MAGMA)
+
+n[2]*h[3]*n[2]^-1 eq h[3];
+n[3]*h[3]*n[3]^-1 eq h[3];
+n[24]*h[3]*n[24]^-1 eq h[3];
+n[21]*h[3]*n[21]^-1 eq h[3];
+n[2]*h[2]*h[4]*n[2]^-1 eq h[2]*h[4];
+n[3]*h[2]*h[4]*n[3]^-1 eq h[2]*h[4];
+n[24]*h[2]*h[4]*n[24]^-1 eq h[2]*h[4];
+n[21]*h[2]*h[4]*n[21]^-1 eq h[2]*h[3]*h[4];
+
+// verify that (h1*n3)^2=n21^2=[h1*n3,n21]=(n21*n24)^4=h_3 and n2^2=[h1*n3,n24]=h2*h4 (MAGMA)
+
+(h[1]*n[3])^2 eq h[3];
+n[21]^2 eq h[3];
+(h[1]*n[3])*n[21]*(h[1]*n[3])^-1*n[21]^-1 eq h[3];
+(n[21]*n[24])^4 eq h[3];
+n[24]^2 eq h[2]*h[4];
+n[24]*h[1]*n[3]*n[24]^-1*(h[1]*n[3])^-1 eq h[2]*h[4];
+
+// verify that [n2, n24]=[n2, n21]=1 and (n2*h1*n3)^4=h3 (MAGMA)
+
+n[2]*n[24] eq n[24]*n[2];
+n[2]*n[21] eq n[21]*n[2];
+(n[2]*h[1]*n[3])^4 eq h[3];
+
+// verify lifts h1*n6*n3 and h1*n0*n6*n3 for w6*w3 and w0*w6*w3 (MAGMA)
+
+(h[1]*n[6]*n[3])^2 eq 1;
+(h[1]*n0*n[6]*n[3])^2 eq 1;
+
+###############################################################################
+
+#### Torus 5 (w=w16*w3), minimal supplement of order 2*|C|
+
+#### verify that w and w0*w are conjugate in W (GAP)
+
+x:=w16*w3;
+IsConjugate(W, x, w0*x);
+
+#### verify that C_W(w) is isomorphic to Z_2^4 (GAP)
+
+C:=Centralizer(W, x);
+F:=FreeGroup(4);
+a:=F.1;; b:=F.2;; c:=F.3;; d:=F.4;; 
+rel:=[a^2, b^2, c^2, d^2, (a*b)^2, (a*c)^2, (a*d)^2, (b*c)^2, (b*d)^2, (c*d)^2];;
+G:=F/rel;
+Order(G) = Order(C);
+
+#### verify that w3, w6, w16, and w24 generate C_W(w) and satisfy this set of relations (GAP)
+
+a:=w3;;
+b:=w6;;
+c:=w16;;
+d:=w24;;
+
+a in C; b in C; c in C; d in C; 
+Order(Group(a,b,c,d)) = Order(C);
+a^2 = id; b^2 = id; c^2 = id; d^2 = id; 
+(a*b)^2 = id; (a*c)^2 = id; (a*d)^2 = id; 
+(b*c)^2 = id; (b*d)^2 = id;
+(c*d)^2 = id;
+
+####  verify that [x, n3]=[x, h2*n6]=[x, n16]=1, where x=n16*n3 (MAGMA)
+
+x:=n[16]*n[3];
+x*n[3]*x^-1*n[3]^-1 eq 1;
+x*h[2]*n[6]*x^-1*(h[2]*n[6])^-1 eq 1;
+x*n[16]*x^-1*n[16]^-1 eq 1;
+
+// verify that n16^2=h2*h3*h4, [n3,n16]=[h2*n6,n16]=1 (MAGMA)
+
+n[16]^2 eq h[2]*h[3]*h[4];
+n[3]*n[16]*n[3]^-1*n[16]^-1 eq 1;
+h[2]*n[6]*n[16]*(h[2]*n[6])^-1*n[16]^-1 eq 1;
+
+// verify that M = <n3, n6, h1*n16, h1*h2*n24> is a supplement of order 2*|C| for x=h[1]*n[16]*n[3] (MAGMA)
+
+x:=h[1]*n[16]*n[3]; 
+
+a:=n[3];
+b:=n[6];
+c:=h[1]*n[16];
+d:=h[1]*h[2]*n[24];
+
+a*x*a^-1*x^-1 eq 1;
+b*x*b^-1*x^-1 eq 1;
+c*x*c^-1*x^-1 eq 1;
+d*x*d^-1*x^-1 eq 1;
+
+// <h3> is a normal subgroup of M (MAGMA)
+
+a^2 eq h[3];
+a*h[3]*a^-1 eq h[3];
+b*h[3]*b^-1 eq h[3];
+c*h[3]*c^-1 eq h[3];
+d*h[3]*d^-1 eq h[3];
+
+// verify the relations (MAGMA)
+
+a^2 eq h[3];
+b^2 eq h[3];
+a*b*a^-1*b^-1 eq h[3];
+a*d*a^-1*d^-1 eq h[3];
+b*c*b^-1*c^-1 eq h[3];
+c*d*c^-1*d^-1 eq h[3];
+c^2 eq 1;
+d^2 eq 1;
+a*c*a^-1*c^-1 eq 1;
+b*d*b^-1*d^-1 eq 1;
+
+// verify that h1*h2*n16*n3 is a lift for w of order 2 (MAGMA)
+
+(h[1]*h[2]*n[16]*n[3])^2 eq 1;
+
+###############################################################################
+
+#### Tori 6 and 21 (w=w2w1 or w=w0w2w1), there exist complements in these cases
+
+#### verify that C_W(w) is isomorphic to Z_6 x S_3 (GAP)
+
+x:= w2*w1;
+
+C:=Centralizer(W, x);
+F:=FreeGroup(3);
+a:=F.1;; b:=F.2;; c:=F.3;;
+rel:=[a^6, b^2, c^2, (b*c)^3, a*b*a^-1*b^-1, a*c*a^-1*c^-1];;
+G:=F/rel;
+Order(G) = Order(C);
+
+#### verify that w0*w2*w1, w4, and w19 generate C_W(w) and satisfy this set of relations (GAP)
+
+a:=w0*w2*w1;;
+b:=w4;;
+c:=w19;;
+
+a in C; b in C; c in C;
+Order(Group(a,b,c)) = Order(C);
+a^6 = id; b^2 = id; c^2 = id;
+(b*c)^3 = id;
+a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id;
+
+#### verify that n0*n2*n1, h3*h4*n4, and h4*n19 generate a complement (MAGMA)
+
+x:=n[2]*n[1];
+a:=n0*n[2]*n[1];;
+b:=h[3]*h[4]*n[4];;
+c:=h[4]*n[19];;
+
+// verify first that a, b, and c in the normalizer of n2*n1 and n0*n2*n1
+x*a*x^-1*a^-1 eq 1; x*b*x^-1*b^-1 eq 1; x*c*x^-1*c^-1 eq 1;
+a*b*a^-1*b^-1 eq 1; a*c*a^-1*c^-1 eq 1;
+
+// now relations of C_W(w)
+a^6 eq 1; b^2 eq 1; c^2 eq 1;
+(b*c)^3 eq 1;
+a*b*a^-1*b^-1 eq 1; a*c*a^-1*c^-1 eq 1;
+
+###############################################################################
+
+##### Tori 7 and 20 (w=w3*w4 or w=w0*w3*w4), there are complements in these cases
+
+#### verify that C_W(w) is isomorphic to Z_6 x S_3 (GAP)
+
+x:= w3*w4;
+
+C:=Centralizer(W, x);
+F:=FreeGroup(3);
+a:=F.1;; b:=F.2;; c:=F.3;;
+rel:=[a^6, b^2, c^2, (b*c)^3, a*b*a^-1*b^-1, a*c*a^-1*c^-1];;
+G:=F/rel;
+Order(G) = Order(C);
+
+#### verify that w0*w3*w4, w1, and w24 generate C_W(w) and satisfy this set of relations (GAP)
+
+a:=w0*w3*w4;;
+b:=w1;;
+c:=w24;;
+
+a in C; b in C; c in C;
+Order(Group(a,b,c)) = Order(C);
+a^6 = id; b^2 = id; c^2 = id;
+(b*c)^3 = id;
+a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id;
+
+#### verify that n0*n2*n1, h2*h4*n1, and h1*n24 generate a complement  (MAGMA)
+
+x:=n[3]*n[4];
+a:=n0*n[3]*n[4];;
+b:=h[2]*h[4]*n[1];;
+c:=h[1]*n[24];;
+
+// verify first that a, b, and c in the normalizer of n2*n1 and n0*n2*n1
+
+x*a*x^-1*a^-1 eq 1; x*b*x^-1*b^-1 eq 1; x*c*x^-1*c^-1 eq 1;
+a*b*a^-1*b^-1 eq 1; a*c*a^-1*c^-1 eq 1;
+
+// now relations of C_W(w)
+
+a^6 eq 1; b^2 eq 1; c^2 eq 1;
+(b*c)^3 eq 1;
+a*b*a^-1*b^-1 eq 1; a*c*a^-1*c^-1 eq 1;
+
+#### Tori 8 and 19 (w=w3*w2 or w=w0*w3*w2), minimal supplement of order 2|C|
+
+#### verify that C_W(w) is isomorphic to Z_4 x D_8 (GAP)
+
+x:= w3*w2;
+
+C:=Centralizer(W, x);
+F:=FreeGroup(3);
+a:=F.1;; b:=F.2;; c:=F.3;;
+rel:=[a^4, b^2, c^2, (b*c)^4, a*b*a^-1*b^-1, a*c*a^-1*c^-1];;
+G:=F/rel;
+Order(G) = Order(C);
+
+#### verify that w3*w2, w8, and w24 generate C_W(w) and satisfy this set of relations (GAP)
+
+a:=w3*w2;;
+b:=w8;;
+c:=w24;;
+
+a in C; b in C; c in C;
+Order(Group(a,b,c)) = Order(C);
+a^4 = id; b^2 = id; c^2 = id;
+(b*c)^4 = id;
+a*b*a^-1*b^-1 = id; a*c*a^-1*c^-1 = id;
+
+#### verify that w21*w8*w3*w2 in C_W(w) (GAP)
+
+w[21]*w[8]*w[3]*w[2] in C;
+
+#### verify that n3*n2, h2*n8, n24 belong to the normalizer (MAGMA)
+
+x:=n[3]*n[2];
+x*n[3]*n[2]*x^-1*(n[3]*n[2])^-1 eq 1;
+x*h[2]*n[8]*x^-1*(h[2]*n[8])^-1 eq 1;
+x*n[24]*x^-1*n[24]^-1 eq 1;
+x:=n0*n[3]*n[2];
+x*n[3]*n[2]*x^-1*(n[3]*n[2])^-1 eq 1;
+x*h[2]*n[8]*x^-1*(h[2]*n[8])^-1 eq 1;
+x*n[24]*x^-1*n[24]^-1 eq 1;
+
+// verify that <h3> is a normal subgroup in the normalizer (MAGMA)
+
+n[3]*n[2]*h[3]*(n[3]*n[2])^-1 eq h[3];
+h[2]*n[8]*h[3]*(h[2]*n[8])^-1 eq h[3];
+n[24]*h[3]^-1*n[24]^-1 eq h[3];
+
+// verify that (n3*n2)^4=(h2*n8)^2=h3 and [n3*n2, h2*n8]=1 (MAGMA)
+
+(n[3]*n[2])^4 eq h[3];
+(h[2]*n[8])^2 eq h[3];
+n[3]*n[2]*h[2]*n[8]*(n[3]*n[2])^-1*(h[2]*n[8])^-1 eq 1;
+
+// verify that n24^2=h2*h4, (n24*h2*n8)^4=h3
+
+n[24]^2 eq h[2]*h[4];
+(n[24]*h[2]*n[8])^4 eq h[3];
+
+// verify that w0*w3*w2 and w21*w8*w3*w2 are conjugate in W (GAP)
+
+IsConjugate(W, w0*w[3]*w[2], w[21]*w[8]*w[3]*w[2]);
+
+###############################################################################
+
+#### Torus 11 (w=w2*w1*w16), minimal supplement of order 2|C_W(w)|
+
+#### verify that w and w0*w are conjugate in W
+
+x:=w2*w1*w16;
+IsConjugate(W, x,w0*x);
+
+#### verify that C_W(w) is isomorphic to Z_4 x D8 (GAP)
+
+x:=w2*w1*w16;
+
+C:=Centralizer(W, x);
+F:=FreeGroup(3);
+a:=F.1;; b:=F.2;; c:=F.3;;
+rel:=[a^4, b^2, c^2, a*b*a^-1*b^-1, a*c*a^-1*c^-1, b*c*b^-1*c^-1];;
+G:=F/rel;
+Order(G) = Order(C);
+
+#### verify that w2*w1*w16, w0, and w10 generate C_W(w) and satisfy this set of relations (GAP)
+
+a:=w2*w1*w16;;
+b:=w0;;
+c:=w10;;
+
+a in C; b in C; c in C;
+Order(Group(a,b,c)) = Order(C);
+
+a^4 = id; b^2 = id; c^2 = id;
+a*b*a^-1*b^-1 = id;
+a*c*a^-1*c^-1 = id;
+b*c*b^-1*c^-1 = id;
+
+#### verify that (n2*n1*n16)^4=h3*h4 (MAGMA)
+
+(n[2]*n[1]*n[16])^4 eq h[3]*h[4]; 
+
+// verify that elements n2*n1*n16, n0, and n10 generate a supplement of order 2|C_W(w)|
+
+x:=n[2]*n[1]*n[16];
+
+// first verify that n2*n1*n16, n0, and n10 normalize the group <h3*h4>
+
+x^-1*h[3]*h[4]*x eq h[3]*h[4];
+n[10]^-1*h[3]*h[4]*n[10] eq h[3]*h[4];
+n0^-1*h[3]*h[4]*n0 eq h[3]*h[4];
+
+// verify the relations of C_W(w) on n2*n1*n16, n0, and n10
+
+x*n0*x^-1*n0^-1 eq 1;
+x*n[10]*x^-1*n[10]^-1 eq 1;
+n0^2 eq 1;
+x^4 eq h[3]*h[4];
+n[10]^2 eq h[3]*h[4];
+n0*n[10]*n0^-1*n[10]^-1 eq 1;
+
+###############################################################################
+
+#### Torus 12 (w=w16*w3*w12) minimal supplement of order 2|C_W(w)|
+
+#### verify that w and w0*w are conjugate in W
+
+x:=w16*w3*w2;
+IsConjugate(W, x,w0*x);
+
+#### verify that C_W(w) is isomorphic to Z_4 x D8 (GAP)
+
+x:=w16*w3*w2;
+
+C:=Centralizer(W, x);
+F:=FreeGroup(3);
+a:=F.1;; b:=F.2;; c:=F.3;;
+rel:=[a^4, b^2, c^2, a*b*a^-1*b^-1, a*c*a^-1*c^-1, b*c*b^-1*c^-1];;
+G:=F/rel;
+Order(G) = Order(C);
+
+#### verify that w2*w1*w16, w0, and w10 generate C_W(w) and satisfy this set of relations (GAP)
+
+a:=w16*w3*w2;;
+b:=w0;;
+c:=w24;;
+
+a in C; b in C; c in C;
+Order(Group(a,b,c)) = Order(C);
+
+a^4 = id; b^2 = id; c^2 = id;
+a*b*a^-1*b^-1 = id;
+a*c*a^-1*c^-1 = id;
+b*c*b^-1*c^-1 = id;
+
+##### verify that (n16*n3*n2)^4 = h2 (MAGMA)
+
+(n[16]*n[3]*n[2])^4 eq h[3];
+
+// verify that [n, n0]=[n, n24]=1 (MAGMA)
+
+x:=n[16]*n[3]*n[2];
+x*n0*x^-1*n0^-1 eq 1;
+x*n[24]*x^-1*n[24]^-1 eq 1;
+
+// verify that <h3> is normal subgroup in <n16*n3*n2, n0, n24>
+
+x*h[3]*x^-1 eq h[3];
+n0*h[3]*n0^-1 eq h[3];
+n[24]*h[3]*n[24]^-1 eq h[3];
+
+###############################################################################
+
+Tori 13 and 15 (w=w3*w2*w7 or w=w0*w3*w2*w7), there exist complements
+
+#### verify that C_W(w) is isomorphic to Z_6 x Z_2 (GAP)
+
+x:=w3*w2*w7;
+
+C:=Centralizer(W, x);
+F:=FreeGroup(2);
+a:=F.1;; b:=F.2;;
+rel:=[a^6, b^2, a*b*a^-1*b^-1];;
+G:=F/rel;
+Order(G) = Order(C);
+
+#### verify that w3*w2*w7 and w0 generate C_W(w) and satisfy this set of relations (GAP)
+
+a:=w3*w2*w7;;
+b:=w0;;
+
+a in C; b in C;
+Order(Group(a,b)) = Order(C);
+
+a^6 = id; b^2 = id;
+a*b*a^-1*b^-1 = id;
+
+####  verify that h1*n3*n2*n7 and n0 generate a complement (MAGMA)
+
+x:=h[1]*n[3]*n[2]*n[7];
+
+x^6 eq 1;
+n0^2 eq 1;
+x*n0*x^-1*n0^-1 eq 1;
+
+###############################################################################
+
+Tori 14 and 16 (w=w3*w2*w1 or w=w0*w3*w2*w1), there exist complements
+
+#### verify that C_W(w) is isomorphic to Z_6 x Z_2 (GAP)
+
+x:=w3*w2*w1;
+
+C:=Centralizer(W, x);
+F:=FreeGroup(2);
+a:=F.1;; b:=F.2;;
+rel:=[a^6, b^2, a*b*a^-1*b^-1];;
+G:=F/rel;
+Order(G) = Order(C);
+
+#### verify that w3*w2*w1 and w0 generate C_W(w) and satisfy this set of relations (GAP)
+
+a:=w3*w2*w1;;
+b:=w0;;
+
+a in C; b in C;
+Order(Group(a,b)) = Order(C);
+
+a^6 = id; b^2 = id;
+a*b*a^-1*b^-1 = id;
+
+####  verify that n3*n2*n1 and n0 generate a complement (MAGMA)
+
+x:=n[3]*n[2]*n[1];
+
+x^6 eq 1;
+n0^2 eq 1;
+x*n0*x^-1*n0^-1 eq 1;
+
+###############################################################################
+
+#### Torus 22 (w = w8*w16*w3*w2), supplement of order 4|C|
+
+#### verify that w and w0*w are conjugate in W
+
+x:=w8*w16*w3*w2;
+IsConjugate(W, x, w0*x);
+
+#### verify that C_W(w) is isomorphic to SL(2,3):4
+
+x:=w8*w16*w3*w2;
+
+C:=Centralizer(W, x);
+F:=FreeGroup(3);
+a:=F.1;; b:=F.2;; c:=F.3;;
+rel:=[a^4, b^4, c^3, a*b*a^-1*b^-1, a^3*b^2*c*b^-1*c^-2 ];;
+G:=F/rel;
+Order(G) = Order(C);
+
+#### verify that w16*w8, w2*w3, and w1*w3*w16*w19 generate C_W(w) and satisfy these relations
+
+a:=w16*w8;;
+b:=w2*w3;;
+c:=w1*w3*w16*w19;;
+
+a in C; b in C; c in C;
+Order(Group(a,b,c)) = Order(C);
+
+a^4 = id; b^4 = id; c^3 = id;
+a*b*a^-1*b^-1 = id;
+a^3*b^2*c*b^-1*c^-2 = id;
+
+#### verify that (w21*w8*w3*w2)^w16 in C_W(w)
+
+(w21*w8*w3*w2)^w16 in Centralizer(W, x);
+
+#### verify that h3^n16 = h3
+
+n[16]*h[3]*n[16]^-1 eq h[3];
+
+#### verify that h2*n8*n16*n3*n2 and n1*n3*n16*n19 commute (MAGMA)
+
+h[2]*n[8]*n[16]*n[3]*n[2] * n[1]*n[3]*n[16]*n[19] eq n[1]*n[3]*n[16]*n[19] * h[2]*n[8]*n[16]*n[3]*n[2];
+
+// verify that h3^(n1*n3*n16*n19) = h3*h4 (MAGMA)
+
+(n[1]*n[3]*n[16]*n[19])*h[3]*(n[1]*n[3]*n[16]*n[19])^-1 eq h[3]*h[4];
+
+// verify that n16*n8, h2*n2*n3, n1*n3*n16*n19 generate a supplement of order 4|C_W(w)|
+
+x:=h[2]*n[8]*n[16]*n[3]*n[2];
+a:=n[16]*n[8]; 
+b:=h[2]*n[2]*n[3]; 
+c:=n[1]*n[3]*n[16]*n[19];
+
+x*a*x^-1*a^-1 eq 1;
+x*b*x^-1*b^-1 eq 1;
+x*c*x^-1*c^-1 eq 1;
+
+a*h[3]*a^-1 eq h[3];
+b*h[3]*b^-1 eq h[3];
+c*h[3]*c^-1 eq h[3]*h[4]; 
+a*h[4]*a^-1 eq h[3]*h[4]; 
+b*h[4]*b^-1 eq h[3]*h[4];
+c*h[4]*c^-1 eq h[3];
+
+a^4 eq h[3]; 
+b^4 eq h[3];
+c^3 eq 1;
+a*b*a^-1*b^-1 eq h[3];
+a^3*b^2*c*b^-1*c^-2 eq h[3];
+
+// verify that n8*n16*n3*n2 is a lift of order 4
+
+(n[8]*n[16]*n[3]*n[2])^4 eq 1;
+
+###############################################################################
+
+#### Torus 23 (w = w3*w2*w1*w16), there exists a complement
+
+#### verify that w and w0*w are conjugate in W
+
+x:=w3*w2*w1*w16;;
+IsConjugate(W, x, w0*x);
+
+#### verify that C_W(w) is isomorphic to Z_8
+
+x:=w3*w2*w1*w16;;
+C:=Centralizer(W, x);;
+F:=FreeGroup(1);;
+a:=F.1;; 
+rel:=[a^8];;
+G:=F/rel;
+Order(G) = Order(C);
+
+#### verify that w generate C_W(w)
+
+Order(Group(x)) = Order(C);
+x^8 = id; 
+
+#### verify that (n3*n2*n1*n16)^8 = 1 (MAGMA)
+
+(n[3]*n[2]*n[1]*n[16])^8 eq 1;
+
+###############################################################################
+
+#### Torus 24 (w = w8*w1*w2*w4), there exists a complement
+
+#### verify that w and w0*w are conjugate in W
+
+x:=w8*w1*w2*w4;;
+IsConjugate(W, x, w0*x);
+
+#### verify that C_W(w) is isomorphic to Z_8
+
+x:=w8*w1*w2*w4;;
+C:=Centralizer(W, x);;
+F:=FreeGroup(1);;
+a:=F.1;; 
+rel:=[a^12];;
+G:=F/rel;
+Order(G) = Order(C);
+
+#### verify that w generate C_W(w)
+
+Order(Group(x)) = Order(C);
+x^12 = id; 
+
+#### verify that (n8*n1*n2*n4)^12 = 1 (MAGMA)
+
+(n[8]*n[1]*n[2]*n[4])^12 eq 1;
+
+###############################################################################
+
+#### Tori 25 and 18 (w=w6*w1*w9*w4 or w=w0*w6*w1*w9*w4), there exists a complement
+
+#### verify that C_W(w) is isomorphic to Z_3 x SL(2,3)
+
+x:=w6*w1*w9*w4;
+
+C:=Centralizer(W, x);
+F:=FreeGroup(3);
+a:=F.1;; b:=F.2;; c:=F.3;;
+rel:=[a^3, b^4, c^3, a*b*a^-1*b^-1, a*c*a^-1*c^-1, b*c*b^-1*c*b*c, (c^-1*b)^3];;
+G:=F/rel;
+Order(G) = Order(C);
+
+##### verify that w1*w4*w2*w19, w1*w3*w6*w20, and w1*w2 generate C_W(w) and satisfy these relations
+
+a:=w1*w4*w2*w19;;
+b:=w1*w3*w6*w20;;
+c:=w1*w2;;
+
+a in C; b in C; c in C;
+Order(Group(a,b,c)) = Order(C);
+
+a^3 = id;
+b^4 = id;
+c^3 = id;
+a*b*a^-1*b^-1 = id;
+a*c*a^-1*c^-1 = id;
+b*c*b^-1*c*b*c = id;
+(c^-1*b)^3 = id;
+
+#### verify that h1*h2*h4*n1*n4*n2*n19, h1*h3*h4*n1*n3*n6*n20, and h1*h2*n1*n2 generate a complement (MAGMA)
+
+x:=n[6]*n[1]*n[9]*n[4]; 
+a:=h[1]*h[2]*h[4]*n[1]*n[4]*n[2]*n[19];
+b:=h[1]*h[3]*h[4]*n[1]*n[3]*n[6]*n[20];
+c:=h[1]*h[2]*n[1]*n[2];
+
+x*a*x^-1*a^-1 eq 1;
+x*b*x^-1*b^-1 eq 1;
+x*c*x^-1*c^-1 eq 1;
+
+a^3 eq 1;
+b^4 eq 1;
+c^3 eq 1;
+a*b*a^-1*b^-1 eq 1;
+a*c*a^-1*c^-1 eq 1;
+b*c*b^-1*c*b*c eq 1;
+(c^-1*b)^3 eq 1;
