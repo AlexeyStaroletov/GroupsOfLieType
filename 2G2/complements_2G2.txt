@@ -1,9 +1,9 @@
 ############################################################################################################################
 #### File contains calculations that verify complements for maximal tori of finite twisted group ^2G_2(q) in their algebraic normalizers.
 #### Each case is divided into two parts. The first part contains commands for GAP. We verify generators and relations
-#### for C_(sigma,W(w). Here C_(sigma,w)={x in W | x^-1*w*x^sigma = w}.
-#### The second part devotes to computations in MAGMA. We verify that specific preimages of generators of C_(sigma,W)(w) satisfy
-#### the set of defining relations of C_(sigma,W)(w).
+#### for C_(W,sigma)(w). Here C_(W,sigma)={x in W | x^-1*w*x^sigma = w}.
+#### The second part devotes to computations in MAGMA. We verify that specific preimages of generators of C_(W,sigma)(w) satisfy
+#### the set of defining relations of C_(W,sigma)(w).
 #####
 
 #### Preparatory commands in GAP:
@@ -54,7 +54,7 @@ n0*n[6] eq n[6]*n0;
 
 ###############################################################################
 #### Torus 1 (w=1)
-#### verify that C_(sigma,W)(w) is isomorphic to Z2
+#### verify that C_(W,sigma)(w) is isomorphic to Z2
 
 x:=id;
 C:=[];
@@ -68,7 +68,7 @@ Size(C) = Size(Group(C));
 C:=Group(C);
 Order(C) = 2;
 
-#### verify that w0 generates C_(sigma,W)(w) and satisfies the set of relations (GAP)
+#### verify that w0 generates C_(W,sigma)(w) and satisfies the set of relations (GAP)
 
 a:=w0;
 a in C;
@@ -83,7 +83,7 @@ n0^2 eq 1;
 
 #############################################################################
 #### Torus 2 (w=w1)
-#### verify that C_(sigma,W)(w) is isomorphic to Z6
+#### verify that C_(W,sigma)(w) is isomorphic to Z6
 
 x:=w[1];
 C:=[];
@@ -98,7 +98,7 @@ C:=Group(C);
 IsCyclic(C);
 Order(C) = 6;
 
-#### verify that w1*w2 generates C_(sigma,W)(w) and satisfies the set of relations (GAP)
+#### verify that w1*w2 generates C_(W,sigma)(w) and satisfies the set of relations (GAP)
 
 a:=w1*w2;
 a in C;
@@ -114,7 +114,7 @@ a^6 eq 1;
 #############################################################################
 #### Torus 3 (w=w3)
 
-#### verify that C_(sigma,W)(w) is isomorphic to Z6
+#### verify that C_(W,sigma)(w) is isomorphic to Z6
 
 x:=w[3];
 C:=[];
@@ -129,7 +129,7 @@ C:=Group(C);
 IsCyclic(C);
 Order(C) = 6;
 
-#### verify that w1*w2 generates C_(sigma,W)(w) and satisfies the set of relations (GAP)
+#### verify that w1*w2 generates C_(W,sigma)(w) and satisfies the set of relations (GAP)
 
 a:=w1*w2;
 a in C;
@@ -145,7 +145,7 @@ a^6 eq 1;
 #############################################################################
 #### Torus 4 (w=w4)
 
-#### verify that C_(sigma,W)(w) is isomorphic to Z6
+#### verify that C_(W,sigma)(w) is isomorphic to Z6
 
 x:=w[4];
 C:=[];
@@ -160,7 +160,7 @@ C:=Group(C);
 IsCyclic(C);
 Order(C) = 6;
 
-#### verify that w1*w2 generates C_(sigma,W)(w) and satisfies the set of relations (GAP)
+#### verify that w1*w2 generates C_(W,sigma)(w) and satisfies the set of relations (GAP)
 
 a:=w1*w2;
 a in C;
