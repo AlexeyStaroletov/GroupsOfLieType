@@ -1,0 +1,154 @@
+############################################################################################################################
+#### File contains calculations that verify complements for maximal tori of ^3D_4(q) in their algebraic normalizers.
+#### Each case is divided into two parts. The first part contains commands for GAP. We verify generators and relations
+#### for C_(W,sigma)(w). Here C_(W,sigma)={x in W | x^-1*w*x^sigma = w}.
+#### The second part devotes to computations in MAGMA. We verify that specific preimages of generators of C_(W,sigma)(w) satisfy
+#### the set of defining relations of C_(W,sigma)(w).
+#####
+
+#### Preparatory commands in GAP:
+#### reflections and the Weyl group 
+####
+
+w1:=[[-1, 1, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]];
+w2:=[[1, 0, 0, 0], [1, -1, 1, 1], [0, 0, 1, 0], [0, 0, 0, 1]];
+w3:=[[1, 0, 0, 0], [0, 1, 0, 0], [0, 1, -1, 0], [0, 0, 0, 1]];
+w4:=[[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 1, 0, -1]];
+w5:=[[0, -1, 1, 1], [-1, 0, 1, 1], [0, 0, 1, 0], [0, 0, 0, 1]];
+w6:=[[1, 0, 0, 0], [1, 0, -1, 1], [1, -1, 0, 1], [0, 0, 0, 1]];
+w7:=[[1, 0, 0, 0], [1, 0, 1,-1], [0, 0, 1, 0], [1, -1, 1, 0]];
+w8:=[[0, 0, -1, 1], [-1, 1, -1, 1], [-1, 0, 0, 1], [0, 0, 0, 1]];
+w9:=[[0, 0, 1, -1], [-1, 1, 1, -1], [0, 0, 1, 0], [-1, 0, 1, 0]];
+w10:=[[1, 0, 0, 0], [1, 1, -1, -1], [1, 0, 0, -1], [1, 0, -1, 0]];
+w11:=[[0, 1, -1, -1], [-1, 2, -1, -1], [-1, 1, 0, -1], [-1, 1, -1, 0]];
+w12:=[[1, -1, 0, 0], [0, -1, 0, 0], [0, -1, 1, 0], [0, -1, 0, 1]];
+
+w:=[w1,w2,w3,w4,w5,w6,w7,w8,w9,w10,w11,w12];
+W:=Group(w1,w2,w3,w4);
+w0:=w[1]*w[3]*w[4]*w[12];
+
+sigma:=[w3,w2,w4,w1,w6,w7,w5,w10,w8,w9,w11,w12];
+
+id:=w[1]^2;  ## identity matrix
+
+###############################################################################
+
+##### Preparatory commands in MAGMA (calculator: http://magma.maths.usyd.edu.au/calc/ ) to perform calculations
+
+L:=LieAlgebra("D4", Rationals());
+R:=RootDatum(L);
+G:=GroupOfLieType(L);
+X, Y, H:= ChevalleyBasis(L); 
+// print out extra special pairs of roots and signs
+IsChevalleyBasis(L, R, X, Y, H);
+n:=[ elt<G|i> : i in [1..12]];
+h:=[TorusTerm(G, i,-1) : i in [1..12]];
+w:=[Transpose(i) : i in ReflectionMatrices(R)];
+
+n0:=n[1]*n[3]*n[4]*n[12];
+
+// verify that n0 commutes with all n[i]
+
+n0*n[1] eq n[1]*n0;
+n0*n[2] eq n[2]*n0;
+n0*n[3] eq n[3]*n0;
+n0*n[4] eq n[4]*n0;
+
+###############################################################################
+
+#### Tori 1 and 7 (w=id or w=w0)
+
+#### it is known that C_(W,sigma)(w) is isomorphic to D12, verify that w2 and w1*w3*w4 generate this centralizer
+
+x:=id;
+w2^-1*x*sigma[2]^-1 = x;
+(w1*w3*w4)^-1*x*sigma[1]*sigma[3]*sigma[4] = x;
+
+Order(w2) = 2;
+Order(w1*w3*w4) = 2;
+Order(w2*w1*w3*w4) = 6;
+
+#### verify that h1*h3*h4*n2 and n0 lie in the normalizer and generate a complement (MAGMA)
+
+a:=h[1]*h[3]*h[4]*n[2];
+b:=h[2]*n[1]*n[3]*n[4];
+
+x:=n0;
+x*h[2]*x^-1 eq h[2];  // h[2]^(sigma*x) = h[2]
+x*h[3]*h[4]*h[1]*x^-1 eq h[1]*h[3]*h[4]; // (h[1]*h[3]*h[4])^(sigma*x) = h[1]*h[3]*h[4]
+x*(n[3]*n[4]*n[1])*x^-1 eq n[1]*n[3]*n[4]; // (n[1]*n[3]*n[4])^(sigma*x) = n[1]*n[3]*n[4]
+x*n[2]*x^-1 eq n[2]; // (n[2])^(sigma*x) = n[2]
+
+a^2 eq 1; b^2 eq 1; (a*b)^6 eq 1;
+
+###############################################################################
+#### Tori 2 and 3 (w=w12 or w=w0*w12)
+
+#### it is known that C_(W,sigma)(w) is isomorphic to Z2xZ2, verify that w0 and w12 generate this centralizer
+
+x:=w12;
+w12^-1*x*sigma[12] = x;
+(w[1]*w[3]*w[4]*w[12])^-1*x*(sigma[1]*sigma[3]*sigma[4]*sigma[12]) = x;
+
+Order(w12) = 2;
+Order(w[1]*w[3]*w[4]*w[12]) = 2;
+Order(w12 * w[1]*w[3]*w[4]*w[12]) = 2;
+
+#### verify some equalities for a complement  (MAGMA)
+
+x:=n[12];
+
+x*n[12]*x^-1 eq n[12];  // n[12]^(sigma*x) = n[12]
+x*(n[3]*n[4]*n[1]*n[12])*x^-1 eq n[1]*n[3]*n[4]*n[12];  // n0^(sigma*x) = n0
+
+n[12]^2 eq h[1]*h[3]*h[4];
+n0*n[12] eq n[12]*n0;
+
+
+###############################################################################
+#### Tori 4 and 5 (w=w12*w2 or w=w0*w12*w2)
+
+#### it is known that C_(W,sigma)(w) is isomorphic to SL(2,3), verify that w1*w2*w3*w7 and w1*w7 generate C_(W,sigma)(w)
+
+x:=w12*w2;
+
+(w1*w7)^-1*x*(sigma[1]*sigma[7]) = x;
+(w1*w2*w3*w7)^-1*x*(sigma[1]*sigma[2]*sigma[3]*sigma[7]) = x;
+Order(Group(w1*w7, w1*w2*w3*w7)) = 24;
+C:=Group(w1*w7, w1*w2*w3*w7);
+
+#### verify that w1*w7, w1*w2*w3*w7 generate C_(W,sigma)(w) and satisfy the set of relations for SL(2,3) (GAP)
+
+a:=w1*w2*w3*w7;
+b:=w1*w7;
+a^4 = id; b^3 = id; a*b*a^-1*b*a*b = id; (b^-1*a)^3 = id;
+
+#### verify that n1*n7 and n1*n2*n3*n7 lie in the normalizer and generate a complement (MAGMA)
+
+x:=n[12]*n[2];
+
+a:=n[1]*n[2]*n[3]*n[7];
+b:=n[1]*n[7];
+
+x*n[3]*n[2]*n[4]*n[5]*x^-1 eq a; // a^(sigma*x) = a
+x*n[3]*n[5]*x^-1 eq b;  // b^(sigma*x) = b
+
+a^4 eq 1; b^3 eq 1; 
+a*b*a^-1*b*a*b eq 1; (b^-1*a)^3 eq 1;
+
+###############################################################################
+#### Torus 6 (w=w1*w2)
+
+#### it is known that C_(W,sigma)(w) is isomorphic to Z4, verify that C_(W,sigma)(w) is generated by w1*w2*w3*w7
+
+x:=w1*w2;
+(w1*w2*w3*w7)^-1*x*(sigma[1]*sigma[2]*sigma[3]*sigma[7]) = x;
+Order(w1*w2*w3*w7) = 4;
+
+#### verify n1*n2*n3*n7 lies in the normalizer and generates a complement (MAGMA)
+
+x:=n[1]*n[2];
+a:=n[1]*n[2]*n[3]*n[7];
+
+x*n[3]*n[2]*n[4]*n[5]*x^-1 eq  a; // a^(sigma*n) = a;
+a^4 eq 1; 
