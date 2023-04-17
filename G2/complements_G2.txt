@@ -75,7 +75,9 @@ b*x eq x*b;
 a^2 eq 1; b^2 eq 1; (a*b)^6 eq 1;
 
 #############################################################################
-#### Torus 2 (w=w2)
+#### Tori 2 and 3 (w=w2 or w=w2*w0=w4)
+
+w2*w0 = w4;
 
 #### verify that C_W(w) is isomorphic to Z_2xZ_2 
 
@@ -96,33 +98,16 @@ a^2 = id; b^2 = id; a*b*a^-1*b^-1 = id;
 #### verify that h1*n2 and h1*n4 generate a complement (MAGMA)
 
 x:=h[1]*n[2];
+x0:=h[1]*n[2]*n0;
 a:=h[1]*n[2];
 b:=h[1]*n[4];
 
 a*x eq x*a;
 b*x eq x*b;
+a*x0 eq x0*a;
+b*x0 eq x0*b;
           
 a^2 eq 1; b^2 eq 1; a*b*a^-1*b^-1 eq 1;
-
-#############################################################################
-#### Torus 3 (w=w1)
-
-#### verify that C_W(w) is isomorphic to Z_2xZ_2
-
-x:=w[1];
-C:=Centralizer(W,x);
-IsElementaryAbelian(C);
-Order(C) = 4;
-
-#### verify that w1 and w6 generate C_W(w) and satisfy the set of relations (GAP)
-
-a:=w1;
-b:=w6;
-
-a in C; b in C; 
-Order(Group(a,b)) = Size(C);
-a^2 = id; b^2 = id;
-a*b*a^-1*b^-1 = id; 
 
 #### verify h[2]*n[1] and h[2]*n[6] generate a complement (MAGMA)
 
@@ -135,7 +120,9 @@ b*x eq x*b;
 a^2 eq 1; b^2 eq 1; a*b*a^-1*b^-1 eq 1;             
 
 #############################################################################
-#### Torus 5 (w=w1*w3)
+#### Tori 5 and 6 (w=w1*w3 or w=w1*w3*w0=w1*w5)
+
+w1*w3*w0 = w1*w5;
 
 #### verify that C_W(w) is isomorphic to Z_3xZ_2
 
@@ -158,35 +145,15 @@ a*b*a^-1*b^-1 = id;
 #### verify n[1]*n[3] and h[1]*n[1]*n[6] generate a complement (MAGMA)
 
 x:=n[1]*n[3];
+x0:=n[1]*n[3]*n0;
+
 a:=n[1]*n[3];
 b:=n0;
 
 a*x eq x*a;
 b*x eq x*b;
+a*x0 eq x0*a;
+b*x0 eq x0*b;
+
 a^3 eq 1; b^2 eq 1; a*b*a^-1*b^-1 eq 1;             
-
-#############################################################################
-#### Torus 6 (w=w1*w2)
-
-#### verify that C_W(w) is isomorphic to Z_6
-
-x:=w[1]*w[2];
-C:=Centralizer(W,x);
-IsCyclic(C);
-Order(C) = 6;
-
-#### verify that w1*w2 generates C_W(w) and satisfies the set of relations (GAP)
-
-a:=w1*w2;
-a in C; 
-Order(Group(a)) = Size(C);
-a^6 = id;
-
-#### verify n[1]*n[2] generates a complement (MAGMA)
-
-x:=n[1]*n[2];
-a:=n[1]*n[2];
-
-a*x eq x*a;
-a^6 eq 1;              
 
